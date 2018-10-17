@@ -21,3 +21,6 @@ For now, simply type CONSUME in the gCLI, and it will output a sequence of comma
 * Handle chocolates
 * Handle pvp fight generation
 * Improve item price calculation (compare to cost of making, among other things)
+* Consider spice melange and such
+* Consider mayonnaise
+* Probably much more I haven't though of yet
