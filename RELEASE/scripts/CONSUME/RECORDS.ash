@@ -72,3 +72,26 @@ record Consumable
 	boolean useForkMug;
 	OrganCleaning [int] cleanings;
 };
+
+//=============================================================================
+// DIET
+//=============================================================================
+record Diet
+{
+	Consumable [int] consumables;
+	int [item] counts;
+};
+
+boolean within_limit(Diet d, Consumable c)
+{
+	return (daily_limit(c.it) == -1) || (d.counts[c.it] < daily_limit(c.it));
+}
+
+boolean add_consumable(Diet d, Consumable c)
+{
+	if(!d.within_limit(c))
+		return false;
+	d.consumables[d.consumables.count()] = c;
+	d.counts[c.it]++;
+	return true;
+}

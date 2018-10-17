@@ -26,9 +26,10 @@ In rough order of importance:
 * Care about how much organ space is already full
 * Actually execute the diet, instead of just printing a series of commands
 * Optionally consider meat buffs from food/booze/spleen (including sweet synthesis)
-* Improve item price calculation (compare to cost of making, among other things)
+* Improve item price calculation
 * Consider drunki-bears (maybe)
 * Handle pvp fight generation
 * Consider spice melange and such
 * Consider mayonnaise
+* Consider refined palate
 * Probably much more I haven't though of yet

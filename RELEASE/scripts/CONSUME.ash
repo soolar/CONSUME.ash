@@ -9,7 +9,7 @@ import <CONSUME/HELPERS.ash>
 boolean useSeasoning = false;
 boolean havePinkyRing = available_amount($item[mafia pinky ring]) > 0;
 boolean haveTuxedoShirt = available_amount($item[tuxedo shirt]) > 0;
-int mojoFiltersUseable = 3 - get_property("currentMojoFilters").to_int();
+int mojoFiltersUseable = daily_limit($item[mojo filter]);
 
 boolean firstPassComplete = false;
 boolean consumablesEvaluated = false;
@@ -279,12 +279,12 @@ int organ_value(int stomache, int liver, int spleen)
 	return stomache_value(stomache) + liver_value(liver) + spleen_value(spleen);
 }
 
-Consumable best_consumable(Consumable [int] list, int space)
+Consumable best_consumable(Diet d, Consumable [int] list, int space)
 {
 	//evaluate_consumables_if_needed();
 	foreach i,c in list
 	{
-		if(c.space <= space)
+		if(c.space <= space && d.within_limit(c))
 			return c;
 	}
 
@@ -292,77 +292,77 @@ Consumable best_consumable(Consumable [int] list, int space)
 	return nothing;
 }
 
-Consumable best_spleen(int space)
+Consumable best_spleen(Diet d, int space)
 {
-	Consumable res = best_consumable(spleenies, space);
+	Consumable res = d.best_consumable(spleenies, space);
 	if(res.it == $item[none])
 		print("Failed to find spleenie of size " + space + "!", "red");
 	return res;
 }
 
-Consumable best_stomache(int space)
+Consumable best_stomache(Diet d, int space)
 {
-	Consumable res = best_consumable(food, space);
+	Consumable res = d.best_consumable(food, space);
 	if(res.it == $item[none])
 		print("Failed to find food of size " + space + "!", "red");
 	return res;
 }
 
-Consumable best_liver(int space)
+Consumable best_liver(Diet d, int space)
 {
-	Consumable res = best_consumable(booze, space);
+	Consumable res = d.best_consumable(booze, space);
 	if(res.it == $item[none])
 		print("Failed to find booze of size " + space + "!", "red");
 	return res;
 }
 
-void handle_organ_cleanings(Consumable [int] diet, Consumable c, OrganSpace space);
+void handle_organ_cleanings(Diet diet, Consumable c, OrganSpace space);
 
-void fill_spleen(Consumable [int] diet, OrganSpace space)
+void fill_spleen(Diet d, OrganSpace space)
 {
 	while(space.spleen > 0)
 	{
-		Consumable best = best_spleen(space.spleen);
+		Consumable best = d.best_spleen(space.spleen);
 		if(best.it == $item[none])
 			break;
 		space.spleen -= best.space;
-		diet[diet.count()] = best;
+		d.add_consumable(best);
 	}
 	if(space.spleen > 0)
 		print("Failed to fully fill spleen! " + space.spleen + " left...", "red");
 }
 
-void fill_stomache(Consumable [int] diet, OrganSpace space)
+void fill_stomache(Diet d, OrganSpace space)
 {
 	while(space.fullness > 0)
 	{
-		Consumable best = best_stomache(space.fullness);
+		Consumable best = d.best_stomache(space.fullness);
 		if(best.it == $item[none])
 			break;
-		handle_organ_cleanings(diet, best, space);
+		handle_organ_cleanings(d, best, space);
 		space.fullness -= best.space;
-		diet[diet.count()] = best;
+		d.add_consumable(best);
 	}
 	if(space.fullness > 0)
 		print("Failed to fully fill stomache! " + space.fullness + " left...", "red");
 }
 
-void fill_liver(Consumable [int] diet, OrganSpace space)
+void fill_liver(Diet d, OrganSpace space)
 {
 	while(space.inebriety > 0)
 	{
-		Consumable best = best_liver(space.inebriety);
+		Consumable best = d.best_liver(space.inebriety);
 		if(best.it == $item[none])
 			break;
-		handle_organ_cleanings(diet, best, space);
+		handle_organ_cleanings(d, best, space);
 		space.inebriety -= best.space;
-		diet[diet.count()] = best;
+		d.add_consumable(best);
 	}
 	if(space.inebriety > 0)
 		print("Failed to fully fill liver! " + space.inebriety + " left...", "red");
 }
 
-void handle_organ_cleanings(Consumable [int] diet, Consumable c, OrganSpace space)
+void handle_organ_cleanings(Diet d, Consumable c, OrganSpace space)
 {
 	foreach i,oc in c.cleanings
 	{
@@ -370,85 +370,110 @@ void handle_organ_cleanings(Consumable [int] diet, Consumable c, OrganSpace spac
 		{
 			case ORGAN_SPLEEN:
 				if(space.spleen + oc.space > spleen_limit())
-					fill_spleen(diet, space);
+					fill_spleen(d, space);
 				space.spleen += oc.space;
 				break;
 			case ORGAN_STOMACHE:
 				if(space.fullness + oc.space > fullness_limit())
-					fill_stomache(diet, space);
+					fill_stomache(d, space);
 				space.fullness += oc.space;
 				break;
 			case ORGAN_LIVER:
 				if(space.inebriety + oc.space > inebriety_limit())
-					fill_liver(diet, space);
+					fill_liver(d, space);
 				space.inebriety += oc.space;
 				break;
 		}
 	}
 }
 
-Consumable [int] get_diet(OrganSpace space)
+Diet get_diet(OrganSpace space)
 {
 	evaluate_consumables_if_needed();
 
-	Consumable [int] diet;
+	Diet d;
 
 	while(space.fullness + space.inebriety + space.spleen > 0)
 	{
 		if(space.spleen > 0)
 		{
-			fill_spleen(diet, space);
+			fill_spleen(d, space);
 			if(space.spleen > 0)
 			 break;
 		}
 		if(space.fullness > 0)
 		{
-			fill_stomache(diet, space);
+			fill_stomache(d, space);
 			if(space.fullness > 0)
 				break;
 		}
 		if(space.inebriety > 0)
 		{
-			fill_liver(diet, space);
+			fill_liver(d, space);
 			if(space.inebriety > 0)
 				break;
 		}
 	}
 
-	return diet;
+	return d;
 }
 
-Consumable [int] get_diet(int stom, int liv, int sple)
+Diet get_diet(int stom, int liv, int sple)
 {
 	return get_diet(new OrganSpace(stom, liv, sple));
 }
 
-void print_diet(Consumable [int] diet)
+void append_consumable(buffer b, Consumable c, int amount)
+{
+	if(c.useForkMug)
+	{
+		item forkMug = c.get_fork_mug();
+		if(forkMug == $item[ol' scratch's salad fork])
+			b.append("eat ");
+		else
+			b.append("drink ");
+		if(amount != 1)
+		{
+			b.append(amount);
+			b.append(" ");
+		}
+		b.append(forkMug.to_string());
+		b.append("; ");
+	}
+	switch(c.organ)
+	{
+		case ORGAN_SPLEEN: b.append("chew "); break;
+		case ORGAN_STOMACHE: b.append("eat "); break;
+		case ORGAN_LIVER: b.append("drink "); break;
+		default: b.append("wtf "); break;
+	}
+	if(amount != 1)
+	{
+		b.append(amount);
+		b.append(" ");
+	}
+	b.append(c.it.to_string());
+	b.append("; ");
+}
+
+void print_diet(Diet d)
 {
 	buffer b;
 	b.append("Your ideal diet: ");
-	foreach i,c in diet
+	Consumable last = d.consumables[0];
+	int count = 0;
+	foreach i,c in d.consumables
 	{
-		if(c.useForkMug)
+		if(c.it != last.it)
 		{
-			item forkMug = c.get_fork_mug();
-			if(forkMug == $item[ol' scratch's salad fork])
-				b.append("eat ");
-			else
-				b.append("drink ");
-			b.append(forkMug.to_string());
-			b.append("; ");
+			b.append_consumable(last, count);
+			count = 1;
+			last = c;
 		}
-		switch(c.organ)
-		{
-			case ORGAN_SPLEEN: b.append("chew "); break;
-			case ORGAN_STOMACHE: b.append("eat "); break;
-			case ORGAN_LIVER: b.append("drink "); break;
-			default: b.append("wtf "); break;
-		}
-		b.append(c.it.to_string());
-		b.append("; ");
+		else
+			count++;
 	}
+	b.append_consumable(last, count);
 	print(b.to_string());
 }
 

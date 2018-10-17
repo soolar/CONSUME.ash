@@ -21,6 +21,23 @@ item get_fork_mug(Consumable c)
 	}
 }
 
+boolean care_about_ingredients(item it)
+{
+	// TODO: Care about wads if you have malus access
+	boolean [item] dontCare = $items[
+		flat dough,
+		wad of dough,
+		hacked gibson,
+		browser cookie,
+		hot wad,
+		cold wad,
+		spooky wad,
+		sleaze wad,
+		stench wad,
+	];
+	return !(dontCare contains it);
+}
+
 int item_price(item it)
 {
 	int price = it.mall_price();
@@ -28,6 +45,21 @@ int item_price(item it)
 		price = npc_price(it);
 	if(price == 0) // not for sale in mall or npc stores...
 		price = MAX_MEAT;
+
+	if(it.care_about_ingredients())
+	{
+		int [item] ingredients = get_ingredients(it);
+		if(ingredients.count() > 0)
+		{
+			int ingredientsPrice = 0;
+			foreach ingredient,amount in ingredients
+			{
+				ingredientsPrice += amount * item_price(ingredient);
+			}
+			if(ingredientsPrice < price)
+				price = ingredientsPrice;
+		}
+	}
 
 	return price;
 }
