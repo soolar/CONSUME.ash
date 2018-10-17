@@ -12,15 +12,24 @@ Will require [a recent build of KoLMafia](http://builds.kolmafia.us/job/Kolmafia
 
 ## Usage
 
-For now, simply type CONSUME in the gCLI, and it will output a sequence of commands that you can copy/paste in to the gCLI to execute your diet.
+First, work out how much meat an adventure is worth to you, and then enter
+<pre>
+set valueOfAdventure=that number
+</pre>
+After that, type CONSUME in the gCLI. The output will be a sequence of commands you can copy/paste in to the gCLI to execute your chosen diet.
 
 ## Todo
 
-* Consider drunki-bears (maybe)
+In rough order of importance:
 * Handle mojo filters
 * Handle chocolates
-* Handle pvp fight generation
+* Adapt based on user's organ sizes
+* Care about how much organ space is already full
+* Actually execute the diet, instead of just printing a series of commands
+* Optionally consider meat buffs from food/booze/spleen (including sweet synthesis)
 * Improve item price calculation (compare to cost of making, among other things)
+* Consider drunki-bears (maybe)
+* Handle pvp fight generation
 * Consider spice melange and such
 * Consider mayonnaise
 * Probably much more I haven't though of yet
