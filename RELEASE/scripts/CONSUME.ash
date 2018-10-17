@@ -362,6 +362,28 @@ void fill_liver(Diet d, OrganSpace space)
 		print("Failed to fully fill liver! " + space.inebriety + " left...", "red");
 }
 
+void handle_special_items(Diet d, OrganSpace space)
+{
+	if(mojoFiltersUseable > 0)
+	{
+		float mojoValue = spleen_value(mojoFiltersUseable) / mojoFiltersUseable -
+			item_price($item[mojo filter]);
+		if(mojoValue > 0)
+		{
+			Consumable mojoFilter;
+			mojoFilter.it = $item[mojo filter];
+			mojoFilter.organ = ORGAN_NONE;
+			mojoFilter.cleanings[0] = new OrganCleaning(ORGAN_SPLEEN, 1);
+			for(int i = 0; i < mojoFiltersUseable; ++i)
+			{
+				d.handle_organ_cleanings(mojoFilter, space);
+				d.add_consumable(mojoFilter);
+			}
+			mojoFiltersUseable = 0;
+		}
+	}
+}
+
 void handle_organ_cleanings(Diet d, Consumable c, OrganSpace space)
 {
 	foreach i,oc in c.cleanings
@@ -413,6 +435,7 @@ Diet get_diet(OrganSpace space)
 			if(space.inebriety > 0)
 				break;
 		}
+		handle_special_items(d, space);
 	}
 
 	return d;
@@ -445,6 +468,7 @@ void append_consumable(buffer b, Consumable c, int amount)
 		case ORGAN_SPLEEN: b.append("chew "); break;
 		case ORGAN_STOMACHE: b.append("eat "); break;
 		case ORGAN_LIVER: b.append("drink "); break;
+		case ORGAN_NONE: b.append("use "); break;
 		default: b.append("wtf "); break;
 	}
 	if(amount != 1)
