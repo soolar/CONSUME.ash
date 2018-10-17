@@ -6,15 +6,6 @@ import <CONSUME/CONSTANTS.ash>
 import <CONSUME/RECORDS.ash>
 import <CONSUME/HELPERS.ash>
 
-//=============================================================================
-// TODO:
-// * Consider drunki-bears (maybe)
-// * Handle mojo filters
-// * Handle chocolates
-// * Handle pvp fite gen (mainly for shots of kardashian gin)
-// * Improve item_price (compare to cost of making)
-//=============================================================================
-
 boolean useSeasoning = false;
 boolean havePinkyRing = available_amount($item[mafia pinky ring]) > 0;
 boolean haveTuxedoShirt = available_amount($item[tuxedo shirt]) > 0;
@@ -378,14 +369,19 @@ void handle_organ_cleanings(Consumable [int] diet, Consumable c, OrganSpace spac
 		switch(oc.organ)
 		{
 			case ORGAN_SPLEEN:
-				if(space.spleen + oc.space > space.spleen_limit)
+				if(space.spleen + oc.space > spleen_limit())
 					fill_spleen(diet, space);
 				space.spleen += oc.space;
 				break;
 			case ORGAN_STOMACHE:
-				if(space.fullness + oc.space > space.fullness_limit)
+				if(space.fullness + oc.space > fullness_limit())
 					fill_stomache(diet, space);
 				space.fullness += oc.space;
+				break;
+			case ORGAN_LIVER:
+				if(space.inebriety + oc.space > inebriety_limit())
+					fill_liver(diet, space);
+				space.inebriety += oc.space;
 				break;
 		}
 	}
@@ -424,7 +420,7 @@ Consumable [int] get_diet(OrganSpace space)
 
 Consumable [int] get_diet(int stom, int liv, int sple)
 {
-	return get_diet(make_organ_space(stom, liv, sple));
+	return get_diet(new OrganSpace(stom, liv, sple));
 }
 
 void print_diet(Consumable [int] diet)
@@ -459,9 +455,6 @@ void print_diet(Consumable [int] diet)
 void main()
 {
 	evaluate_consumables();
-	print("value of 15 stomache: " + stomache_value(15));
-	print("value of 21 liver: " + liver_value(21));
-	print("value of 15 spleen: " + spleen_value(15));
 
-	print_diet(get_diet(15, 21, 15));
+	print_diet(get_diet(fullness_limit(), inebriety_limit(), spleen_limit()));
 }

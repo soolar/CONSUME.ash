@@ -4,17 +4,9 @@
 record OrganSpace
 {
 	int fullness;
-	int fullness_limit;
 	int inebriety;
-	int inebriety_limit;
 	int spleen;
-	int spleen_limit;
 };
-
-OrganSpace make_organ_space(int stomache, int liver, int spleen)
-{
-	return new OrganSpace(stomache, stomache, liver, liver, spleen, spleen);
-}
 
 //=============================================================================
 // RANGE
