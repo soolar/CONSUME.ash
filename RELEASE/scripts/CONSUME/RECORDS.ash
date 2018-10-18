@@ -67,6 +67,7 @@ record OrganCleaning
 record Consumable
 {
 	item it;
+	skill sk;
 	int space;
 	int organ;
 	boolean useForkMug;
@@ -75,12 +76,12 @@ record Consumable
 
 boolean is_nothing(Consumable c)
 {
-	return c.it == $item[none];
+	return c.it == $item[none] && c.sk == $skill[none];
 }
 
 boolean is_same(Consumable c1, Consumable c2)
 {
-	return c1.it == c2.it;
+	return c1.it == c2.it && c1.sk == c2.sk;
 }
 
 //=============================================================================

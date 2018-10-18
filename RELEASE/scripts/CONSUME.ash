@@ -10,6 +10,7 @@ boolean useSeasoning = false;
 boolean havePinkyRing = available_amount($item[mafia pinky ring]) > 0;
 boolean haveTuxedoShirt = available_amount($item[tuxedo shirt]) > 0;
 int mojoFiltersUseable = daily_limit($item[mojo filter]);
+int songDuration = my_accordion_buff_duration();
 
 boolean firstPassComplete = false;
 boolean consumablesEvaluated = false;
@@ -42,7 +43,8 @@ Range get_adventures(Consumable c)
 			advs.multiply_round_nearest(1.125);
 		if(haveTuxedoShirt && c.it.is_martini())
 			advs.add(new Range(1, 3));
-		advs.add(c.space); // account for ode
+		if(have_skill($skill[The Ode to Booze]) && songDuration > 0)
+			advs.add(c.space);
 	}
 	return advs;
 }
@@ -464,7 +466,15 @@ Diet get_pre_diet(Diet d)
 		milk.organ = ORGAN_NONE;
 		pre.add_consumable(milk);
 	}
-
+	if(have_skill($skill[The Ode to Booze]) && songDuration > 0)
+	{
+		Consumable ode;
+		ode.sk = $skill[The Ode to Booze];
+		ode.organ = ORGAN_NONE;
+		int casts = ceil(to_float(spaceTaken.inebriety) / songDuration);
+		for(int i = 0; i < casts; ++i)
+			pre.add_consumable(ode);
+	}
 	return pre;
 }
 
@@ -485,20 +495,35 @@ void append_consumable(buffer b, Consumable c, int amount)
 		b.append(forkMug.to_string());
 		b.append("; ");
 	}
-	switch(c.organ)
+	if(c.it != $item[none])
 	{
-		case ORGAN_SPLEEN: b.append("chew "); break;
-		case ORGAN_STOMACHE: b.append("eat "); break;
-		case ORGAN_LIVER: b.append("drink "); break;
-		case ORGAN_NONE: b.append("use "); break;
-		default: b.append("wtf "); break;
+		switch(c.organ)
+		{
+			case ORGAN_SPLEEN: b.append("chew "); break;
+			case ORGAN_STOMACHE: b.append("eat "); break;
+			case ORGAN_LIVER: b.append("drink "); break;
+			case ORGAN_NONE: b.append("use "); break;
+			default: b.append("wtf "); break;
+		}
+		if(amount != 1)
+		{
+			b.append(amount);
+			b.append(" ");
+		}
+		b.append(c.it.to_string());
 	}
-	if(amount != 1)
+	else if(c.sk != $skill[none])
 	{
-		b.append(amount);
-		b.append(" ");
+		b.append("cast ");
+		if(amount != 1)
+		{
+			b.append(amount);
+			b.append(" ");
+		}
+		b.append(c.sk.to_string());
 	}
-	b.append(c.it.to_string());
+	else
+		print("BAD OCCURED", "red");
 	b.append("; ");
 }
 

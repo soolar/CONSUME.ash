@@ -188,3 +188,83 @@ int daily_limit(item it)
 		default: return -1;
 	}
 }
+
+int accordion_buff_duration(item accordion)
+{
+	switch(accordion)
+	{
+		case $item[stolen accordion]:
+		case $item[toy accordion]:
+			return 5;
+		case $item[beer-battered accordion]:
+			return 6;
+		case $item[baritone accordion]:
+		case $item[calavera concertina]:
+			return 7;
+		case $item[mama's squeezebox]:
+			return 8;
+		case $item[guancertina]:
+			return 9;
+		case $item[accord ion]:
+		case $item[accordion file]:
+		case $item[Aerogel accordion]:
+		case $item[Antique accordion]:
+		case $item[Bal-musette accordion]:
+		case $item[Cajun accordion]:
+		case $item[quirky accordion]:
+		case $item[Rock and Roll Legend]:
+		case $item[Skipper's accordion]:
+		case $item[warbear exhaust manifold]:
+			return 10;
+		case $item[bone bandoneon]:
+			return 11;
+		case $item[pentatonic accordion]:
+			return 12;
+		case $item[Accordion of Jordion]:
+			return 14;
+		case $item[autocalliope]:
+		case $item[non-Euclidean non-accordion]:
+		case $item[Shakespeare's Sister's Accordion]:
+		case $item[Squeezebox of the Ages]:
+			return 15;
+		case $item[ghost accordion]:
+			return 16;
+		case $item[pygmy concertinette]:
+			return 17;
+		case $item[accordionoid rocca]:
+			return 18;
+		case $item[peace accordion]:
+			return 19;
+		case $item[alarm accordion]:
+		case $item[The Trickster's Trikitixa]:
+		case $item[zombie accordion]:
+			return 20;
+		default:
+			return 0;
+	}
+}
+
+boolean is_legal_accordion(item it)
+{
+	boolean [item] legalAccordions = $items[
+		toy accordion,
+		antique accordion,
+		aerogel accordion,
+	];
+	return legalAccordions contains it;
+}
+
+int my_accordion_buff_duration()
+{
+	int longest = 0;
+	foreach it in get_inventory()
+	{
+		int duration = accordion_buff_duration(it);
+		if(duration > longest && (my_class() == $class[accordion thief] 
+			|| is_legal_accordion(it)))
+			longest = duration;
+	}
+	if(item_amount($item[jewel-eyed wizard hat]) > 0)
+		longest += 5;
+	return longest;
+}
