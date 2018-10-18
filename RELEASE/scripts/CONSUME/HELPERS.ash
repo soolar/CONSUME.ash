@@ -4,8 +4,14 @@ import <CONSUME/CONSTANTS.ash>
 // get the pure adventure value of the item itself, raw
 Range get_adventures(item it)
 {
-	string [int] adv_strs = split_string(it.adventures, "-");
 	Range r;
+	if(it == $item[none])
+	{
+		r.min = 0;
+		r.max = 0;
+		return r;
+	}
+	string [int] adv_strs = split_string(it.adventures, "-");
 	r.min = adv_strs[0].to_int();
 	r.max = adv_strs[(adv_strs.count() > 1) ? 1 : 0].to_int();
 	return r;

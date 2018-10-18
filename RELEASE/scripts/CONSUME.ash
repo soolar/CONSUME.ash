@@ -549,9 +549,12 @@ void print_diet(Diet d)
 {
 	buffer b;
 	b.append("Your ideal diet: ");
-	b.append_diet(d.get_pre_diet());
+	Diet pre = d.get_pre_diet();
+	b.append_diet(pre);
 	b.append_diet(d);
 	print(b.to_string());
+	print("This should cost roughly " + (pre.total_cost() + d.total_cost()) + " meat");
+	print("Adventure yield should be roughly " + d.total_adventures().to_string());
 }
 
 void main()

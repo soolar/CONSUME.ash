@@ -52,6 +52,11 @@ float average(Range r)
 	return (r.min.to_float() + r.max.to_float()) / 2.0;
 }
 
+string to_string(Range r)
+{
+	return r.min.to_string() + "-" + r.max.to_string();
+}
+
 //=============================================================================
 // ORGANCLEANING
 //=============================================================================
@@ -98,12 +103,17 @@ boolean within_limit(Diet d, Consumable c)
 	return (daily_limit(c.it) == -1) || (d.counts[c.it] < daily_limit(c.it));
 }
 
+item get_fork_mug(Consumable c);
+
 boolean add_consumable(Diet d, Consumable c)
 {
 	if(!d.within_limit(c))
 		return false;
 	d.consumables[d.consumables.count()] = c;
-	d.counts[c.it]++;
+	if(c.it != $item[none])
+		d.counts[c.it]++;
+	if(c.useForkMug)
+		d.counts[c.get_fork_mug()]++;
 	return true;
 }
 
@@ -120,4 +130,24 @@ OrganSpace total_space(Diet d)
 		}
 	}
 	return os;
+}
+
+int item_price(item it);
+
+int total_cost(Diet d)
+{
+	int cost = 0;
+	foreach it,amount in d.counts
+		cost += amount * it.item_price();
+	return cost;
+}
+
+Range get_adventures(Consumable c);
+
+Range total_adventures(Diet d)
+{
+	Range totalAdventures = new Range(0, 0);
+	foreach i,c in d.consumables
+		totalAdventures.add(c.get_adventures());
+	return totalAdventures;
 }
