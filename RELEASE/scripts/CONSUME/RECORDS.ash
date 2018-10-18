@@ -52,9 +52,11 @@ float average(Range r)
 	return (r.min.to_float() + r.max.to_float()) / 2.0;
 }
 
+string format(int i);
+
 string to_string(Range r)
 {
-	return r.min.to_string() + "-" + r.max.to_string();
+	return r.min.format() + "-" + r.max.format();
 }
 
 //=============================================================================

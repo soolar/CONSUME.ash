@@ -553,8 +553,13 @@ void print_diet(Diet d)
 	b.append_diet(pre);
 	b.append_diet(d);
 	print(b.to_string());
-	print("This should cost roughly " + (pre.total_cost() + d.total_cost()) + " meat");
-	print("Adventure yield should be roughly " + d.total_adventures().to_string());
+	int cost = pre.total_cost() + d.total_cost();
+	print("This should cost roughly " + cost.format() + " meat");
+	Range advs = d.total_adventures();
+	print("Adventure yield should be roughly " + advs.to_string());
+	advs.multiply_round_nearest(ADV_VALUE);
+	advs.add(-cost);
+	print("That's a profit of " + advs.to_string());
 }
 
 void main()

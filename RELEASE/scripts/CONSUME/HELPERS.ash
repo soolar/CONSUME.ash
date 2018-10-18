@@ -70,3 +70,12 @@ int item_price(item it)
 	return price;
 }
 
+string format(int i)
+{
+	return to_string(i, "%,d");
+}
+
+string format(float f)
+{
+	return to_string(f, "%,.0f");
+}
