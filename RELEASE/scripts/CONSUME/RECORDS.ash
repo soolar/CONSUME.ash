@@ -73,6 +73,16 @@ record Consumable
 	OrganCleaning [int] cleanings;
 };
 
+boolean is_nothing(Consumable c)
+{
+	return c.it == $item[none];
+}
+
+boolean is_same(Consumable c1, Consumable c2)
+{
+	return c1.it == c2.it;
+}
+
 //=============================================================================
 // DIET
 //=============================================================================
@@ -94,4 +104,19 @@ boolean add_consumable(Diet d, Consumable c)
 	d.consumables[d.consumables.count()] = c;
 	d.counts[c.it]++;
 	return true;
+}
+
+OrganSpace total_space(Diet d)
+{
+	OrganSpace os = new OrganSpace(0, 0, 0);
+	foreach i,c in d.consumables
+	{
+		switch(c.organ)
+		{
+			case ORGAN_STOMACHE: os.fullness += c.space; break;
+			case ORGAN_LIVER: os.inebriety += c.space; break;
+			case ORGAN_SPLEEN: os.spleen += c.space; break;
+		}
+	}
+	return os;
 }

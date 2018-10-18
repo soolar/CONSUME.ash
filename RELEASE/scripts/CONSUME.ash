@@ -446,6 +446,28 @@ Diet get_diet(int stom, int liv, int sple)
 	return get_diet(new OrganSpace(stom, liv, sple));
 }
 
+Diet get_pre_diet(Diet d)
+{
+	Diet pre;
+	OrganSpace spaceTaken = d.total_space();
+	int milkTurns = have_effect($effect[got milk]);
+	while(milkTurns < spaceTaken.fullness)
+	{
+		int milkDuration = numeric_modifier($item[milk of magnesium], "effect duration");
+		float milkValue = ADV_VALUE * min(milkDuration, spaceTaken.fullness - milkTurns) -
+			item_price($item[milk of magnesium]);
+		if(milkValue <= 0)
+			break;
+		milkTurns += milkDuration;
+		Consumable milk;
+		milk.it = $item[milk of magnesium];
+		milk.organ = ORGAN_NONE;
+		pre.add_consumable(milk);
+	}
+
+	return pre;
+}
+
 void append_consumable(buffer b, Consumable c, int amount)
 {
 	if(c.useForkMug)
@@ -480,15 +502,13 @@ void append_consumable(buffer b, Consumable c, int amount)
 	b.append("; ");
 }
 
-void print_diet(Diet d)
+void append_diet(buffer b, Diet d)
 {
-	buffer b;
-	b.append("Your ideal diet: ");
 	Consumable last = d.consumables[0];
 	int count = 0;
 	foreach i,c in d.consumables
 	{
-		if(c.it != last.it)
+		if(!c.is_same(last))
 		{
 			b.append_consumable(last, count);
 			count = 1;
@@ -498,6 +518,14 @@ void print_diet(Diet d)
 			count++;
 	}
 	b.append_consumable(last, count);
+}
+
+void print_diet(Diet d)
+{
+	buffer b;
+	b.append("Your ideal diet: ");
+	b.append_diet(d.get_pre_diet());
+	b.append_diet(d);
 	print(b.to_string());
 }
 
