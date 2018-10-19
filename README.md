@@ -32,3 +32,10 @@ In rough order of importance:
 * Consider mayonnaise
 * Consider refined palate
 * Probably much more I haven't though of yet
+
+## Special Thanks
+
+I'm writing this script for my own sake, but my clannies at Reddit United have been very supportive!
+
+Especially Rag Nymph (#2662313) and JorGen Van Doe (#3069483), both of whom have made my time all
+the more worthwhile with their kind donations!
