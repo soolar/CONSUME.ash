@@ -79,6 +79,7 @@ record Consumable
 	int organ;
 	boolean useForkMug;
 	OrganCleaning [int] cleanings;
+	boolean useSporkIfPossible;
 };
 
 boolean is_nothing(Consumable c)
@@ -106,6 +107,7 @@ boolean within_limit(Diet d, Consumable c)
 }
 
 item get_fork_mug(Consumable c);
+boolean use_seasoning();
 
 boolean add_consumable(Diet d, Consumable c)
 {
@@ -116,6 +118,8 @@ boolean add_consumable(Diet d, Consumable c)
 		d.counts[c.it]++;
 	if(c.useForkMug)
 		d.counts[c.get_fork_mug()]++;
+	if(c.organ == ORGAN_STOMACHE && use_seasoning())
+		d.counts[$item[special seasoning]]++;
 	return true;
 }
 
@@ -152,4 +156,15 @@ Range total_adventures(Diet d)
 	foreach i,c in d.consumables
 		totalAdventures.add(c.get_adventures());
 	return totalAdventures;
+}
+
+int total_organ_fillers(Diet d, int organ)
+{
+	int fillers = 0;
+	foreach i,c in d.consumables
+	{
+		if(c.organ == organ)
+			fillers += 1;
+	}
+	return fillers;
 }

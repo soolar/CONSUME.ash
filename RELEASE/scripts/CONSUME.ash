@@ -7,6 +7,7 @@ import <CONSUME/RECORDS.ash>
 import <CONSUME/HELPERS.ash>
 
 boolean useSeasoning = false;
+boolean use_seasoning() { return useSeasoning; } // for use in RECORDS.ash
 boolean havePinkyRing = available_amount($item[mafia pinky ring]) > 0;
 boolean haveTuxedoShirt = available_amount($item[tuxedo shirt]) > 0;
 int mojoFiltersUseable = daily_limit($item[mojo filter]);
@@ -56,6 +57,8 @@ float get_value(Consumable c)
 	float value = advs.average() * ADV_VALUE - c.it.item_price();
 	if(c.useForkMug)
 		value -= forkMug.item_price();
+	if(c.organ == ORGAN_STOMACHE && useSeasoning)
+		value -= $item[special seasoning].item_price();
 
 	if(firstPassComplete)
 	{
@@ -545,12 +548,25 @@ void append_diet(buffer b, Diet d)
 	b.append_consumable(last, count);
 }
 
+void get_seasonings(buffer b, Diet d)
+{
+	if(useSeasoning)
+	{
+		b.append("acquire ");
+		b.append(d.total_organ_fillers(ORGAN_STOMACHE));
+		b.append(" ");
+		b.append($item[special seasoning].to_string());
+		b.append("; ");
+	}
+}
+
 void print_diet(Diet d)
 {
 	buffer b;
 	b.append("Your ideal diet: ");
 	Diet pre = d.get_pre_diet();
 	b.append_diet(pre);
+	b.get_seasonings(d);
 	b.append_diet(d);
 	print(b.to_string());
 	int cost = pre.total_cost() + d.total_cost();
