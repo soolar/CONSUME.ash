@@ -1,5 +1,5 @@
 //=============================================================================
-// ORGANSPACE
+// ORGAN SPACE
 //=============================================================================
 record OrganSpace
 {
@@ -60,7 +60,7 @@ string to_string(Range r)
 }
 
 //=============================================================================
-// ORGANCLEANING
+// ORGAN CLEANING
 //=============================================================================
 record OrganCleaning
 {
@@ -93,32 +93,66 @@ boolean is_same(Consumable c1, Consumable c2)
 }
 
 //=============================================================================
+// DIET ACTION
+//=============================================================================
+record DietAction
+{
+	item it;
+	skill sk;
+	int organ;
+	int space;
+	item tool; // fork/mug/spork
+};
+
+boolean is_same(DietAction da1, DietAction da2)
+{
+	return da1.it == da2.it && da1.sk == da2.sk && da1.tool == da2.tool;
+}
+
+//=============================================================================
 // DIET
 //=============================================================================
 record Diet
 {
-	Consumable [int] consumables;
+	DietAction [int] actions;
 	int [item] counts;
 };
 
-boolean within_limit(Diet d, Consumable c)
+boolean within_limit(Diet d, item it)
 {
-	return (daily_limit(c.it) == -1) || (d.counts[c.it] < daily_limit(c.it));
+	return (daily_limit(it) == -1) || (d.counts[it] < daily_limit(it));
 }
 
 item get_fork_mug(Consumable c);
 boolean use_seasoning();
 
-boolean add_consumable(Diet d, Consumable c)
+DietAction to_action(Consumable c, Diet d)
 {
-	if(!d.within_limit(c))
-		return false;
-	d.consumables[d.consumables.count()] = c;
-	if(c.it != $item[none])
-		d.counts[c.it]++;
+	DietAction da;
+	da.it = c.it;
+	da.sk = c.sk;
+	da.organ = c.organ;
+	da.space = c.space;
+	// figure out the tool
 	if(c.useForkMug)
-		d.counts[c.get_fork_mug()]++;
-	if(c.organ == ORGAN_STOMACHE && use_seasoning())
+		da.tool = c.get_fork_mug();
+	if(c.useSporkIfPossible && d.counts[$item[fudge spork]] == 0)
+		da.tool = $item[fudge spork];
+
+	return da;
+}
+
+boolean add_action(Diet d, DietAction da)
+{
+	if(!d.within_limit(da.it))
+		return false;
+
+	d.actions[d.actions.count()] = da;
+	if(da.it != $item[none])
+		d.counts[da.it]++;
+	if(da.tool != $item[none])
+		d.counts[da.tool]++;
+	if(da.organ == ORGAN_STOMACHE && use_seasoning())
 		d.counts[$item[special seasoning]]++;
 	return true;
 }
@@ -126,13 +160,13 @@ boolean add_consumable(Diet d, Consumable c)
 OrganSpace total_space(Diet d)
 {
 	OrganSpace os = new OrganSpace(0, 0, 0);
-	foreach i,c in d.consumables
+	foreach i,da in d.actions
 	{
-		switch(c.organ)
+		switch(da.organ)
 		{
-			case ORGAN_STOMACHE: os.fullness += c.space; break;
-			case ORGAN_LIVER: os.inebriety += c.space; break;
-			case ORGAN_SPLEEN: os.spleen += c.space; break;
+			case ORGAN_STOMACHE: os.fullness += da.space; break;
+			case ORGAN_LIVER: os.inebriety += da.space; break;
+			case ORGAN_SPLEEN: os.spleen += da.space; break;
 		}
 	}
 	return os;
@@ -148,22 +182,22 @@ int total_cost(Diet d)
 	return cost;
 }
 
-Range get_adventures(Consumable c);
+Range get_adventures(DietAction da);
 
 Range total_adventures(Diet d)
 {
 	Range totalAdventures = new Range(0, 0);
-	foreach i,c in d.consumables
-		totalAdventures.add(c.get_adventures());
+	foreach i,da in d.actions
+		totalAdventures.add(da.get_adventures());
 	return totalAdventures;
 }
 
 int total_organ_fillers(Diet d, int organ)
 {
 	int fillers = 0;
-	foreach i,c in d.consumables
+	foreach i,da in d.actions
 	{
-		if(c.organ == organ)
+		if(da.organ == organ)
 			fillers += 1;
 	}
 	return fillers;
