@@ -434,6 +434,87 @@ void handle_organ_cleanings(Diet d, Consumable c, OrganSpace space)
 	}
 }
 
+void handle_chocolates(Diet d)
+{
+	item classChoco = get_class_chocolate(my_class());
+	item cheapestClass = get_cheapest($items[
+		chocolate seal-clubbing club,
+		chocolate turtle totem,
+		chocolate pasta spoon,
+		chocolate saucepan,
+		chocolate disco ball,
+		chocolate stolen accordion,
+	]);
+	item cheapestNormal = get_cheapest($items[
+		fancy chocolate,
+		fancy but probably evil chocolate,
+		fancy chocolate car,
+		beet-flavored Mr. Mediocrebar,
+		cabbage-flavored Mr. Mediocrebar,
+		sweet-corn-flavored Mr. Mediocrebar,
+		choco-Crimbot,
+	]);
+	for(int chocount = 0; chocount < 3; ++chocount)
+	{
+		int normalAdvs = 5 - 2 * chocount;
+		int classAdvs = 3 - chocount;
+		int offClassAdvs = 2 - chocount;
+		float normalVal = normalAdvs * ADV_VALUE - cheapestNormal.item_price();
+		float classVal = classAdvs * ADV_VALUE - classChoco.item_price();
+		float offClassVal = offClassAdvs * ADV_VALUE - cheapestClass.item_price();
+		item best = $item[none];
+		int bestVal = 0;
+		if(normalVal > bestVal)
+		{
+			bestVal = normalVal;
+			best = cheapestNormal;
+		}
+		if(classVal > bestVal)
+		{
+			bestVal = classVal;
+			best = classChoco;
+		}
+		if(offClassVal > bestVal)
+		{
+			bestVal = offClassVal;
+			best = cheapestClass;
+		}
+		if(best != $item[none])
+		{
+			DietAction eatChoco;
+			eatChoco.it = best;
+			eatChoco.organ = ORGAN_NONE;
+			d.add_action(eatChoco);
+		}
+	}
+	// broken in to its own loop so the resulting diet looks better
+	for(int vitaAdvs = 5; vitaAdvs > 0; vitaAdvs -= 2)
+	{
+		int vitaPrice = $item[vitachoconutriment capsule].item_price();
+		int vitaVal = vitaAdvs * ADV_VALUE - vitaPrice;
+		if(vitaVal > 0)
+		{
+			DietAction eatVita;
+			eatVita.it = $item[vitachoconutriment capsule];
+			eatVita.organ = ORGAN_NONE;
+			d.add_action(eatVita);
+		}
+	}
+	// once again, it's own loop just for the diet's appearance
+	for(int cigarAdvs = 5; cigarAdvs > 0; cigarAdvs -= 2)
+	{
+		int cigarPrice = $item[chocolate cigar].item_price();
+		int cigarVal = cigarAdvs * ADV_VALUE - cigarPrice;
+		if(cigarVal > 0)
+		{
+			DietAction eatCigar;
+			eatCigar.it = $item[chocolate cigar];
+			eatCigar.organ = ORGAN_NONE;
+			d.add_action(eatCigar);
+		}
+	}
+}
+
 Diet get_diet(OrganSpace space)
 {
 	evaluate_consumables_if_needed();
@@ -462,6 +543,7 @@ Diet get_diet(OrganSpace space)
 		}
 		handle_special_items(d, space);
 	}
+	handle_chocolates(d);
 
 	return d;
 }

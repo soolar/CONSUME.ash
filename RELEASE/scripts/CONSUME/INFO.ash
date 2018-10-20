@@ -270,3 +270,17 @@ int my_accordion_buff_duration()
 		longest += 5;
 	return longest;
 }
+
+item get_class_chocolate(class c)
+{
+	switch(c)
+	{
+		case $class[Seal Clubber]: return $item[chocolate seal-clubbing club];
+		case $class[Turtle Tamer]: return $item[chocolate turtle totem];
+		case $class[Pastamancer]: return $item[chocolate pasta spoon];
+		case $class[Sauceror]: return $item[chocolate saucepan];
+		case $class[Disco Bandit]: return $item[chocolate disco ball];
+		case $class[Accordion Thief]: return $item[chocolate stolen accordion];
+		default: return $item[none];
+	}
+}

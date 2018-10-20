@@ -79,3 +79,19 @@ string format(float f)
 {
 	return to_string(f, "%,.0f");
 }
+
+item get_cheapest(boolean [item] items)
+{
+	item cheapest = $item[none];
+	int cheapestPrice = MAX_MEAT;
+	foreach it in items
+	{
+		int price = it.item_price();
+		if(price < cheapestPrice)
+		{
+			cheapestPrice = price;
+			cheapest = it;
+		}
+	}
+	return cheapest;
+}
