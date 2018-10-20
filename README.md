@@ -21,7 +21,6 @@ After that, type CONSUME in the gCLI. The output will be a sequence of commands 
 ## Todo
 
 In rough order of importance:
-* Handle chocolates
 * Care about how much organ space is already full
 * Actually execute the diet, instead of just printing a series of commands
 * Optionally consider meat buffs from food/booze/spleen (including sweet synthesis)
