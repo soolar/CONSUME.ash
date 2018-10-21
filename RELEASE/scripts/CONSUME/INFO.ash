@@ -175,6 +175,8 @@ int daily_limit(item it)
 			return get_property("_sweetToothUsed").to_boolean() ? 0 : 1;
 		case $item[fudge spork]:
 			return get_property("_fudgeSporkUsed").to_boolean() ? 0 : 1;
+		case $item[essential tofu]:
+			return get_property("_essentialTofuUsed").to_boolean() ? 0 : 1;
 		// batfellow consumables
 		case $item[Kudzu salad]:
 		case $item[Mansquito Serum]:

@@ -483,6 +483,15 @@ void handle_special_items(Diet d, OrganSpace space)
 			d.add_action(sourBall.to_action(d));
 		}
 	}
+
+	if(d.within_limit($item[essential tofu]))
+	{
+		DietAction useTofu;
+		useTofu.it = $item[essential tofu];
+		useTofu.organ = ORGAN_NONE;
+		if(useTofu.get_value() > 0)
+			d.add_action(useTofu);
+	}
 }
 
 void handle_organ_cleanings(Diet d, Consumable c, OrganSpace space)

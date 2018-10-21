@@ -43,6 +43,7 @@ sculpture support isn't handled nicely if you run multiple times in one day beca
 mafia preference to track its use (that I could find, at least)
 * Organ cleaning consumables (hobopolis/batfellow consumables)
 * Considers cost of ingredients to make an item
+* Essential tofu
 
 ## Todo
 
