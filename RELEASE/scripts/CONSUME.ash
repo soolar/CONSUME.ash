@@ -571,6 +571,16 @@ Diet get_diet(OrganSpace space)
 
 	Diet d;
 
+	// do the shotglass drink first
+	if(item_amount($item[mime army shotglass]) > 0 &&
+		!get_property("_mimeArmyShotglassUsed").to_boolean())
+	{
+		int actualLiver = space.inebriety;
+		space.inebriety = 1;
+		fill_liver(d, space);
+		space.inebriety += actualLiver;
+	}
+
 	while(space.fullness + space.inebriety + space.spleen > 0)
 	{
 		if(space.spleen > 0)
