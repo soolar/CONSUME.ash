@@ -491,7 +491,7 @@ void handle_chocolates(Diet d)
 		sweet-corn-flavored Mr. Mediocrebar,
 		choco-Crimbot,
 	]);
-	for(int chocount = 0; chocount < 3; ++chocount)
+	for(int chocount = get_property("_chocolatesUsed").to_int(); chocount < 3; ++chocount)
 	{
 		int normalAdvs = 5 - 2 * chocount;
 		int classAdvs = 3 - chocount;
@@ -525,7 +525,7 @@ void handle_chocolates(Diet d)
 		}
 	}
 	// broken in to its own loop so the resulting diet looks better
-	for(int vitaAdvs = 5; vitaAdvs > 0; vitaAdvs -= 2)
+	for(int vitaAdvs = 5 - 2 * get_property("_vitachocCapsulesUsed").to_int(); vitaAdvs > 0; vitaAdvs -= 2)
 	{
 		int vitaPrice = $item[vitachoconutriment capsule].item_price();
 		int vitaVal = vitaAdvs * ADV_VALUE - vitaPrice;
@@ -538,7 +538,7 @@ void handle_chocolates(Diet d)
 		}
 	}
 	// once again, it's own loop just for the diet's appearance
-	for(int cigarAdvs = 5; cigarAdvs > 0; cigarAdvs -= 2)
+	for(int cigarAdvs = 5 - 2 * get_property("_chocolateCigarsUsed").to_int(); cigarAdvs > 0; cigarAdvs -= 2)
 	{
 		int cigarPrice = $item[chocolate cigar].item_price();
 		int cigarVal = cigarAdvs * ADV_VALUE - cigarPrice;
@@ -550,7 +550,7 @@ void handle_chocolates(Diet d)
 			d.add_action(eatCigar);
 		}
 	}
-	// own loop for diet appearance
+	// own loop for diet appearance, no chocolate preference for this one??
 	for(int artAdvs = 5; artAdvs > 0; artAdvs -= 2)
 	{
 		int artPrice = $item[fancy chocolate sculpture].item_price();
@@ -766,5 +766,7 @@ void main()
 {
 	evaluate_consumables();
 
-	print_diet(get_diet(fullness_limit(), inebriety_limit(), spleen_limit()));
+	print_diet(get_diet(fullness_limit() - my_fullness(),
+		inebriety_limit() - my_inebriety(),
+		spleen_limit() - my_spleen_use()));
 }

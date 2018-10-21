@@ -29,7 +29,6 @@ is what you would want to do if you are farming barf mountain and have the songb
 ## Todo
 
 In rough order of importance:
-* Care about how much organ space is already full
 * Actually execute the diet, instead of just printing a series of commands
 * Optionally consider meat buffs from food/booze/spleen
 * Improve item price calculation
