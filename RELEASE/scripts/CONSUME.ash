@@ -60,19 +60,29 @@ Range get_adventures(DietAction da)
 	return advs;
 }
 
-float get_value(Consumable c, Diet d)
+float get_value(DietAction da)
 {
-	DietAction da = c.to_action(d);
 	Range advs = da.get_adventures();
-	float value = advs.average() * ADV_VALUE - da.it.item_price();
+	float value = advs.average() * ADV_VALUE;
+	if(da.it != $item[none])
+		value -= da.it.item_price();
 	if(da.tool != $item[none])
 		value -= da.tool.item_price();
-	if(c.organ == ORGAN_STOMACHE && useSeasoning)
-		value -= $item[special seasoning].item_price();
+	if(da.mayo != $item[none])
+		value -= da.mayo.item_price();
+	if(da.organ == ORGAN_STOMACHE && useSeasoning)
+		value -= $item[Special Seasoning].item_price();
+	
+	if(da.sk == $skill[Sweet Synthesis])
+	{
+		item [int] greedCandies = sweet_synthesis_pair($effect[Synthesis: Greed]);
+		int greedPrice = greedCandies[0].item_price() + greedCandies[1].item_price();
+		value += BASE_MEAT * 3 * 30 - greedPrice;
+	}
 
 	if(firstPassComplete)
 	{
-		foreach i,oc in c.cleanings
+		foreach i,oc in da.cleanings
 		{
 			switch(oc.organ)
 			{
@@ -87,9 +97,15 @@ float get_value(Consumable c, Diet d)
 	return value;
 }
 
+float get_value(Consumable c, Diet d)
+{
+	DietAction da = c.to_action(d);
+	return da.get_value();
+}
+
 void evaluate_special_items()
 {
-	if($item[special seasoning].item_price() < ADV_VALUE)
+	if($item[Special Seasoning].item_price() < ADV_VALUE)
 		useSeasoning = true;
 	else
 		useSeasoning = false;
@@ -151,7 +167,7 @@ void evaluate_consumables()
 	boolean [item] lookups;
 	// can't directly assign this to lookups or it becomes a constant
 	foreach it in $items[frosty's frosty mug, ol' scratch's salad fork,
-		special seasoning, mojo filter, fudge spork, essential tofu,
+		Special Seasoning, mojo filter, fudge spork, essential tofu,
 		milk of magnesium]
 		lookups[it] = true;
 	foreach it in $items[]
@@ -256,7 +272,7 @@ void evaluate_consumables()
 		}
 	}
 	/*
-	print("food" + (useSeasoning ? " (use special seasoning)" : ""));
+	print("food" + (useSeasoning ? " (use Special Seasoning)" : ""));
 	print_some(food);
 	print("booze");
 	print_some(booze);
@@ -318,7 +334,11 @@ int organ_value(int stomache, int liver, int spleen)
 
 Consumable best_consumable(Diet d, Consumable [int] list, int space)
 {
-	//evaluate_consumables_if_needed();
+	if(space <= 0)
+	{
+		return new Consumable();
+	}
+	evaluate_consumables_if_needed();
 	foreach i,c in list
 	{
 		if(c.space <= space && d.within_limit(c.it))
@@ -332,7 +352,7 @@ Consumable best_consumable(Diet d, Consumable [int] list, int space)
 Consumable best_spleen(Diet d, int space)
 {
 	Consumable res = d.best_consumable(spleenies, space);
-	if(res.it == $item[none])
+	if(space > 0 && res.it == $item[none])
 		print("Failed to find spleenie of size " + space + "!", "red");
 	return res;
 }
@@ -340,7 +360,7 @@ Consumable best_spleen(Diet d, int space)
 Consumable best_stomache(Diet d, int space)
 {
 	Consumable res = d.best_consumable(food, space);
-	if(res.it == $item[none])
+	if(space > 0 && res.it == $item[none])
 		print("Failed to find food of size " + space + "!", "red");
 	return res;
 }
@@ -348,7 +368,7 @@ Consumable best_stomache(Diet d, int space)
 Consumable best_liver(Diet d, int space)
 {
 	Consumable res = d.best_consumable(booze, space);
-	if(res.it == $item[none])
+	if(space > 0 && res.it == $item[none])
 		print("Failed to find booze of size " + space + "!", "red");
 	return res;
 }
@@ -575,6 +595,7 @@ Diet get_diet(OrganSpace space)
 	}
 	handle_chocolates(d);
 
+	// prepend milk and ode
 	OrganSpace spaceTaken = d.total_space();
 	int milkTurns = have_effect($effect[got milk]);
 	while(milkTurns < spaceTaken.fullness)
@@ -598,6 +619,39 @@ Diet get_diet(OrganSpace space)
 		int casts = ceil(to_float(spaceTaken.inebriety) / songDuration);
 		for(int i = 0; i < casts; ++i)
 			d.insert_action(ode, 0);
+	}
+
+	// go through your spleen actions from the end and replace with
+	// sweet synthesis as appropriate
+	if(have_skill($skill[Sweet Synthesis]) && BASE_MEAT > 0)
+	{
+		DietAction synthesizeGreed;
+		synthesizeGreed.sk = $skill[Sweet Synthesis];
+		synthesizeGreed.organ = ORGAN_SPLEEN;
+		synthesizeGreed.space = 1;
+		float greedValue = synthesizeGreed.get_value();
+		for(int i = d.actions.count() - 1; i >= 0; --i)
+		{
+			if(d.total_synthesis_turns() >= my_adventures() + d.total_adventures().average())
+				break;
+
+			if(d.actions[i].organ == ORGAN_SPLEEN && d.actions[i].sk != $skill[Sweet Synthesis])
+			{
+				if(d.actions[i].get_value() / d.actions[i].space < greedValue)
+				{
+					int spaceToFill = d.actions[i].space - 1;
+					d.remove_action(i);
+					while(spaceToFill > 0)
+					{
+						Consumable filler = d.best_spleen(spaceToFill);
+						spaceToFill -= filler.space;
+						d.insert_action(filler.to_action(d), i);
+						++i;
+					}
+					d.insert_action(synthesizeGreed, i);
+				}
+			}
+		}
 	}
 
 	return d;
@@ -641,7 +695,7 @@ void append_diet_action(buffer b, DietAction da, int amount, Diet d)
 
 	if(da.it != $item[none])
 		b.append_item(da.it, da.organ, amount);
-	else if(da.sk != $skill[none])
+	else if(da.sk != $skill[none] && da.sk != $skill[Sweet Synthesis])
 	{
 		b.append("cast ");
 		if(amount != 1)
@@ -651,6 +705,11 @@ void append_diet_action(buffer b, DietAction da, int amount, Diet d)
 		}
 		b.append(da.sk.to_string());
 		b.append("; ");
+	}
+	else if(da.sk == $skill[Sweet Synthesis])
+	{
+		for(int i = 0; i < amount; ++i)
+			b.append("synthesize greed; ");
 	}
 	else
 		print("BAD OCCURED", "red");
@@ -694,9 +753,13 @@ void print_diet(Diet d)
 	print("This should cost roughly " + cost.format() + " meat");
 	Range advs = d.total_adventures();
 	print("Adventure yield should be roughly " + advs.to_string());
-	advs.multiply_round_nearest(ADV_VALUE);
-	advs.add(-cost);
-	print("That's a profit of " + advs.to_string());
+	int profit = d.total_profit();
+	print("That's an average profit of " + profit.format());
+	profit += my_adventures() * ADV_VALUE;
+	print("Including adventures you already have, you should profit " + profit.format() + " today");
+	OrganSpace space = d.total_space();
+	print("In total, you're filling up " + space.fullness + " fullness, " +
+		space.inebriety + " liver, and " + space.spleen + " spleen");
 }
 
 void main()

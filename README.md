@@ -18,12 +18,20 @@ set valueOfAdventure=that number
 </pre>
 After that, type CONSUME in the gCLI. The output will be a sequence of commands you can copy/paste in to the gCLI to execute your chosen diet.
 
+You can also set CONSUME.BASEMEAT to the base meat of whatever zone you meatfarm (if you meatfarm)
+in order to have CONSUME consider the value of meat buffs in your diet. So far it only supports
+sweet synthesis, but more is coming soon! As an example:
+<pre>
+set CONSUME.BASEMEAT=275
+</pre>
+is what you would want to do if you are farming barf mountain and have the songboom boombox.
+
 ## Todo
 
 In rough order of importance:
 * Care about how much organ space is already full
 * Actually execute the diet, instead of just printing a series of commands
-* Optionally consider meat buffs from food/booze/spleen (including sweet synthesis)
+* Optionally consider meat buffs from food/booze/spleen
 * Improve item price calculation
 * Consider drunki-bears (maybe)
 * Handle pvp fight generation

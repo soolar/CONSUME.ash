@@ -104,6 +104,7 @@ record DietAction
 	int space;
 	item tool; // fork/mug/spork
 	item mayo;
+	OrganCleaning [int] cleanings;
 };
 
 boolean is_same(DietAction da1, DietAction da2)
@@ -139,6 +140,7 @@ DietAction to_action(Consumable c, Diet d)
 	da.sk = c.sk;
 	da.organ = c.organ;
 	da.space = c.space;
+	da.cleanings = c.cleanings;
 	// figure out the tool
 	if(c.useForkMug)
 		da.tool = c.get_fork_mug();
@@ -159,7 +161,31 @@ void add_counts(Diet d, DietAction da)
 	if(da.mayo != $item[none])
 		d.counts[da.mayo]++;
 	if(da.organ == ORGAN_STOMACHE && use_seasoning())
-		d.counts[$item[special seasoning]]++;
+		d.counts[$item[Special Seasoning]]++;
+	if(da.sk == $skill[Sweet Synthesis])
+	{
+		item [int] greedCandies = sweet_synthesis_pair($effect[Synthesis: Greed]);
+		d.counts[greedCandies[0]]++;
+		d.counts[greedCandies[1]]++;
+	}
+}
+
+void remove_counts(Diet d, DietAction da)
+{
+	if(da.it != $item[none])
+		d.counts[da.it]--;
+	if(da.tool != $item[none])
+		d.counts[da.tool]--;
+	if(da.mayo != $item[none])
+		d.counts[da.mayo]--;
+	if(da.organ == ORGAN_STOMACHE && use_seasoning())
+		d.counts[$item[Special Seasoning]]--;
+	if(da.sk == $skill[Sweet Synthesis])
+	{
+		item [int] greedCandies = sweet_synthesis_pair($effect[Synthesis: Greed]);
+		d.counts[greedCandies[0]]--;
+		d.counts[greedCandies[1]]--;
+	}
 }
 
 boolean add_action(Diet d, DietAction da)
@@ -183,6 +209,25 @@ boolean insert_action(Diet d, DietAction da, int index)
 	d.actions[index] = da;
 	d.add_counts(da);
 	return true;
+}
+
+boolean replace_action(Diet d, int index, DietAction replacement)
+{
+	if(!d.within_limit(replacement.it))
+		return false;
+
+	d.remove_counts(d.actions[index]);
+	d.actions[index] = replacement;
+	d.add_counts(replacement);
+	return true;
+}
+
+void remove_action(Diet d, int index)
+{
+	d.remove_counts(d.actions[index]);
+	for(int i = index + 1; i < d.actions.count(); ++i)
+		d.actions[i - 1] = d.actions[i];
+	remove d.actions[d.actions.count() - 1];
 }
 
 OrganSpace total_space(Diet d)
@@ -229,4 +274,25 @@ int total_organ_fillers(Diet d, int organ)
 			fillers += 1;
 	}
 	return fillers;
+}
+
+int total_synthesis_turns(Diet d)
+{
+	int turns = 0;
+	foreach i,da in d.actions
+	{
+		if(da.sk == $skill[Sweet Synthesis])
+			turns += 30;
+	}
+	return turns;
+}
+
+float get_value(DietAction da);
+
+float total_profit(Diet d)
+{
+	float profit = 0;
+	foreach i,da in d.actions
+		profit += da.get_value();
+	return profit;
 }
