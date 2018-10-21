@@ -626,7 +626,8 @@ Diet get_diet(OrganSpace space)
 		DietAction ode;
 		ode.sk = $skill[The Ode to Booze];
 		ode.organ = ORGAN_NONE;
-		int casts = ceil(to_float(spaceTaken.inebriety) / songDuration);
+		int turnsNeeded = spaceTaken.inebriety - have_effect($effect[Ode to Booze]);
+		int casts = ceil(to_float(turnsNeeded) / songDuration);
 		for(int i = 0; i < casts; ++i)
 			d.insert_action(ode, 0);
 	}
