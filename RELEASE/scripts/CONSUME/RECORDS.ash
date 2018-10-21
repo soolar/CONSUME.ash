@@ -80,6 +80,7 @@ record Consumable
 	boolean useForkMug;
 	OrganCleaning [int] cleanings;
 	boolean useSporkIfPossible;
+	item bestMayo;
 };
 
 boolean is_nothing(Consumable c)
@@ -102,11 +103,15 @@ record DietAction
 	int organ;
 	int space;
 	item tool; // fork/mug/spork
+	item mayo;
 };
 
 boolean is_same(DietAction da1, DietAction da2)
 {
-	return da1.it == da2.it && da1.sk == da2.sk && da1.tool == da2.tool;
+	return da1.it == da2.it &&
+		da1.sk == da2.sk &&
+		da1.tool == da2.tool &&
+		da1.mayo == da2.mayo;
 }
 
 //=============================================================================
@@ -116,6 +121,7 @@ record Diet
 {
 	DietAction [int] actions;
 	int [item] counts;
+	item lastMayo;
 };
 
 boolean within_limit(Diet d, item it)
@@ -138,8 +144,22 @@ DietAction to_action(Consumable c, Diet d)
 		da.tool = c.get_fork_mug();
 	if(c.useSporkIfPossible && d.counts[$item[fudge spork]] == 0)
 		da.tool = $item[fudge spork];
+	if(c.bestMayo != $item[none])
+		da.mayo = c.bestMayo;
 
 	return da;
+}
+
+void add_counts(Diet d, DietAction da)
+{
+	if(da.it != $item[none])
+		d.counts[da.it]++;
+	if(da.tool != $item[none])
+		d.counts[da.tool]++;
+	if(da.mayo != $item[none])
+		d.counts[da.mayo]++;
+	if(da.organ == ORGAN_STOMACHE && use_seasoning())
+		d.counts[$item[special seasoning]]++;
 }
 
 boolean add_action(Diet d, DietAction da)
@@ -148,12 +168,20 @@ boolean add_action(Diet d, DietAction da)
 		return false;
 
 	d.actions[d.actions.count()] = da;
-	if(da.it != $item[none])
-		d.counts[da.it]++;
-	if(da.tool != $item[none])
-		d.counts[da.tool]++;
-	if(da.organ == ORGAN_STOMACHE && use_seasoning())
-		d.counts[$item[special seasoning]]++;
+	d.add_counts(da);
+	return true;
+}
+
+boolean insert_action(Diet d, DietAction da, int index)
+{
+	if(!d.within_limit(da.it))
+		return false;
+
+	int preCount = d.actions.count();
+	for(int i = preCount - 1; i >= index; --i)
+		d.actions[i + 1] = d.actions[i];
+	d.actions[index] = da;
+	d.add_counts(da);
 	return true;
 }
 

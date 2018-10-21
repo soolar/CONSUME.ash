@@ -28,7 +28,7 @@ In rough order of importance:
 * Consider drunki-bears (maybe)
 * Handle pvp fight generation
 * Consider spice melange and such
-* Consider mayonnaise
+* Consider mayonnaise other than mayoflex
 * Consider refined palate
 * Probably much more I haven't though of yet
 

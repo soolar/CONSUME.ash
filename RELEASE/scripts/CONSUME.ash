@@ -31,6 +31,8 @@ Range get_adventures(DietAction da)
 	{
 		if(useSeasoning)
 			advs.add(1);
+		if(da.mayo == $item[Mayoflex])
+			advs.add(1);
 		advs.add(da.space); // account for milk
 	}
 	else if(da.organ == ORGAN_LIVER)
@@ -112,6 +114,12 @@ void evaluate_consumable(Consumable c)
 		}
 		if(forkMugValue > 0)
 			c.useForkMug = true;
+	}
+
+	if(c.organ == ORGAN_STOMACHE && npc_price($item[Mayoflex]) != 0)
+	{
+		if(item_price($item[Mayoflex]) < ADV_VALUE)
+			c.bestMayo = $item[Mayoflex];
 	}
 
 	record OrganMatcher
@@ -545,17 +553,6 @@ Diet get_diet(OrganSpace space)
 	}
 	handle_chocolates(d);
 
-	return d;
-}
-
-Diet get_diet(int stom, int liv, int sple)
-{
-	return get_diet(new OrganSpace(stom, liv, sple));
-}
-
-Diet get_pre_diet(Diet d)
-{
-	Diet pre;
 	OrganSpace spaceTaken = d.total_space();
 	int milkTurns = have_effect($effect[got milk]);
 	while(milkTurns < spaceTaken.fullness)
@@ -569,7 +566,7 @@ Diet get_pre_diet(Diet d)
 		DietAction milk;
 		milk.it = $item[milk of magnesium];
 		milk.organ = ORGAN_NONE;
-		pre.add_action(milk);
+		d.insert_action(milk, 0);
 	}
 	if(have_skill($skill[The Ode to Booze]) && songDuration > 0)
 	{
@@ -578,9 +575,15 @@ Diet get_pre_diet(Diet d)
 		ode.organ = ORGAN_NONE;
 		int casts = ceil(to_float(spaceTaken.inebriety) / songDuration);
 		for(int i = 0; i < casts; ++i)
-			pre.add_action(ode);
+			d.insert_action(ode, 0);
 	}
-	return pre;
+
+	return d;
+}
+
+Diet get_diet(int stom, int liv, int sple)
+{
+	return get_diet(new OrganSpace(stom, liv, sple));
 }
 
 void append_item(buffer b, item it, int organ, int amount)
@@ -602,8 +605,15 @@ void append_item(buffer b, item it, int organ, int amount)
 	b.append("; ");
 }
 
-void append_diet_action(buffer b, DietAction da, int amount)
+void append_diet_action(buffer b, DietAction da, int amount, Diet d)
 {
+	if(da.mayo != $item[none] && da.mayo != d.lastMayo)
+	{
+		b.append("mayominder ");
+		b.append(da.mayo);
+		b.append("; ");
+		d.lastMayo = da.mayo;
+	}
 	if(da.tool != $item[none])
 		b.append_item(da.tool, da.organ, amount);
 
@@ -626,44 +636,39 @@ void append_diet_action(buffer b, DietAction da, int amount)
 
 void append_diet(buffer b, Diet d)
 {
+	// get everything first, so that if something is too expensive your diet
+	// isn't interrupted in the middle, since that's a pain in the butt
+	foreach it,amount in d.counts
+	{
+		b.append("acquire ");
+		b.append(amount);
+		b.append(" ");
+		b.append(it.to_string());
+		b.append("; ");
+	}
 	DietAction last = d.actions[0];
 	int count = 0;
 	foreach i,da in d.actions
 	{
 		if(!da.is_same(last))
 		{
-			b.append_diet_action(last, count);
+			b.append_diet_action(last, count, d);
 			count = 1;
 			last = da;
 		}
 		else
 			count++;
 	}
-	b.append_diet_action(last, count);
-}
-
-void get_seasonings(buffer b, Diet d)
-{
-	if(useSeasoning)
-	{
-		b.append("acquire ");
-		b.append(d.total_organ_fillers(ORGAN_STOMACHE));
-		b.append(" ");
-		b.append($item[special seasoning].to_string());
-		b.append("; ");
-	}
+	b.append_diet_action(last, count, d);
 }
 
 void print_diet(Diet d)
 {
 	buffer b;
 	b.append("Your ideal diet: ");
-	Diet pre = d.get_pre_diet();
-	b.append_diet(pre);
-	b.get_seasonings(d);
 	b.append_diet(d);
 	print(b.to_string());
-	int cost = pre.total_cost() + d.total_cost();
+	int cost = d.total_cost();
 	print("This should cost roughly " + cost.format() + " meat");
 	Range advs = d.total_adventures();
 	print("Adventure yield should be roughly " + advs.to_string());
