@@ -26,6 +26,24 @@ set CONSUME.BASEMEAT=275
 </pre>
 is what you would want to do if you are farming barf mountain and have the songboom boombox.
 
+## Supported
+
+* General diet
+* Mojo filters
+* Spice melange
+* Ultra Mega Sour Ball
+* Sweet Synthesis (optional)
+* Mayoflex
+* Special Seasoning
+* Milk of Magnesium
+* The Ode to Booze
+* Mime army shotglass
+* All chocolates other than LOV Extraterrestrial Chocolate (for now). Note that fancy chocolate
+sculpture support isn't handled nicely if you run multiple times in one day because there is no
+mafia preference to track its use (that I could find, at least)
+* Organ cleaning consumables (hobopolis/batfellow consumables)
+* Considers cost of ingredients to make an item
+
 ## Todo
 
 In rough order of importance:
@@ -34,7 +52,7 @@ In rough order of importance:
 * Improve item price calculation
 * Consider drunki-bears (maybe)
 * Handle pvp fight generation
-* Consider spice melange and such
+* Handle cleaners other than spice melange and UMSB
 * Consider mayonnaise other than mayoflex
 * Consider refined palate
 * Probably much more I haven't though of yet

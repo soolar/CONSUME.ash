@@ -181,6 +181,13 @@ void evaluate_consumables()
 			continue;
 		}
 
+		if(BASE_MEAT > 0 && have_skill($skill[Sweet Synthesis]) && it.candy_type == "complex" &&
+			sweet_synthesis_pairing($effect[Synthesis: Greed], it).count() > 0)
+		{
+			lookups[it] = true;
+			continue;
+		}
+
 		Consumable c;
 		c.it = it;
 		c.space = 0;
@@ -444,6 +451,38 @@ void handle_special_items(Diet d, OrganSpace space)
 			mojoFiltersUseable = 0;
 		}
 	}
+
+	if(d.within_limit($item[spice melange]))
+	{
+		float spiceValue = stomache_value(3) + liver_value(3) -
+			$item[spice melange].item_price();
+		if(spiceValue > 0)
+		{
+			Consumable spiceMelange;
+			spiceMelange.it = $item[spice melange];
+			spiceMelange.organ = ORGAN_NONE;
+			spiceMelange.cleanings[0] = new OrganCleaning(ORGAN_STOMACHE, 3);
+			spiceMelange.cleanings[1] = new OrganCleaning(ORGAN_LIVER, 3);
+			d.handle_organ_cleanings(spiceMelange, space);
+			d.add_action(spiceMelange.to_action(d));
+		}
+	}
+
+	if(d.within_limit($item[Ultra Mega Sour Ball]))
+	{
+		float sourBallValue = stomache_value(3) + liver_value(3) -
+			$item[Ultra Mega Sour Ball].item_price();
+		if(sourBallValue > 0)
+		{
+			Consumable sourBall;
+			sourBall.it = $item[Ultra Mega Sour Ball];
+			sourBall.organ = ORGAN_NONE;
+			sourBall.cleanings[0] = new OrganCleaning(ORGAN_STOMACHE, 3);
+			sourBall.cleanings[1] = new OrganCleaning(ORGAN_LIVER, 3);
+			d.handle_organ_cleanings(sourBall, space);
+			d.add_action(sourBall.to_action(d));
+		}
+	}
 }
 
 void handle_organ_cleanings(Diet d, Consumable c, OrganSpace space)
@@ -581,6 +620,11 @@ Diet get_diet(OrganSpace space)
 		space.inebriety += actualLiver;
 	}
 
+	if(space.fullness + space.inebriety + space.spleen <= 0)
+	{
+		handle_special_items(d, space);
+	}
+
 	while(space.fullness + space.inebriety + space.spleen > 0)
 	{
 		if(space.spleen > 0)
@@ -706,7 +750,12 @@ void append_diet_action(buffer b, DietAction da, int amount, Diet d)
 
 	if(da.it != $item[none])
 		b.append_item(da.it, da.organ, amount);
-	else if(da.sk != $skill[none] && da.sk != $skill[Sweet Synthesis])
+	else if(da.sk == $skill[Sweet Synthesis])
+	{
+		for(int i = 0; i < amount; ++i)
+			b.append("synthesize greed; ");
+	}
+	else if(da.sk != $skill[none])
 	{
 		b.append("cast ");
 		if(amount != 1)
@@ -717,13 +766,8 @@ void append_diet_action(buffer b, DietAction da, int amount, Diet d)
 		b.append(da.sk.to_string());
 		b.append("; ");
 	}
-	else if(da.sk == $skill[Sweet Synthesis])
-	{
-		for(int i = 0; i < amount; ++i)
-			b.append("synthesize greed; ");
-	}
-	else
-		print("BAD OCCURED", "red");
+	//else
+		//print("BAD OCCURED", "red");
 }
 
 void append_diet(buffer b, Diet d)
@@ -732,11 +776,14 @@ void append_diet(buffer b, Diet d)
 	// isn't interrupted in the middle, since that's a pain in the butt
 	foreach it,amount in d.counts
 	{
-		b.append("acquire ");
-		b.append(amount);
-		b.append(" ");
-		b.append(it.to_string());
-		b.append("; ");
+		if(amount > 0)
+		{
+			b.append("acquire ");
+			b.append(amount);
+			b.append(" ");
+			b.append(it.to_string());
+			b.append("; ");
+		}
 	}
 	DietAction last = d.actions[0];
 	int count = 0;
