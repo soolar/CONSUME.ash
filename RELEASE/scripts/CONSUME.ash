@@ -154,11 +154,16 @@ void evaluate_consumables()
 		special seasoning, mojo filter, fudge spork, essential tofu,
 		milk of magnesium]
 		lookups[it] = true;
-	int lookup_count = 0;
 	foreach it in $items[]
 	{
 		if(it.tradeable.to_boolean() == false || it == $item[Jeppson's Malort])
 			continue;
+
+		if(it.chocolate)
+		{
+			lookups[it] = true;
+			continue;
+		}
 
 		Consumable c;
 		c.it = it;
@@ -188,7 +193,11 @@ void evaluate_consumables()
 			(c.organ == ORGAN_SPLEEN && advs_per_space > 0)) // anything for spleen
 		{
 			lookups[it] = true;
-			lookup_count++;
+			if(care_about_ingredients(it))
+			{
+				foreach ingredient in get_ingredients(it)
+					lookups[ingredient] = true;
+			}
 			switch(c.organ)
 			{
 				case ORGAN_STOMACHE: food[food.count()] = c; break;
@@ -198,7 +207,7 @@ void evaluate_consumables()
 			}
 		}
 	}
-	print("Looking up the price of " + lookup_count + " items");
+	print("Looking up the price of " + lookups.count() + " items");
 	mall_prices(lookups);
 
 	evaluate_special_items();
@@ -519,6 +528,19 @@ void handle_chocolates(Diet d)
 			eatCigar.it = $item[chocolate cigar];
 			eatCigar.organ = ORGAN_NONE;
 			d.add_action(eatCigar);
+		}
+	}
+	// own loop for diet appearance
+	for(int artAdvs = 5; artAdvs > 0; artAdvs -= 2)
+	{
+		int artPrice = $item[fancy chocolate sculpture].item_price();
+		int artVal = artAdvs * ADV_VALUE - artPrice;
+		if(artVal > 0)
+		{
+			DietAction eatArt;
+			eatArt.it = $item[fancy chocolate sculpture];
+			eatArt.organ = ORGAN_NONE;
+			d.add_action(eatArt);
 		}
 	}
 }
