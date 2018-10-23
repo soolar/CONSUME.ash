@@ -647,12 +647,12 @@ Diet get_diet(OrganSpace space)
 		space.inebriety += actualLiver;
 	}
 
-	if(space.fullness + space.inebriety + space.spleen <= 0)
+	if(space.fullness <= 0 && space.inebriety <= 0 && space.spleen <= 0)
 	{
 		handle_special_items(d, space);
 	}
 
-	while(space.fullness + space.inebriety + space.spleen > 0)
+	while(space.fullness > 0 || space.inebriety > 0 || space.spleen > 0)
 	{
 		if(space.spleen > 0)
 		{
