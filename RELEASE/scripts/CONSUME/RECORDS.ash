@@ -152,40 +152,34 @@ DietAction to_action(Consumable c, Diet d)
 	return da;
 }
 
-void add_counts(Diet d, DietAction da)
+void change_counts(Diet d, DietAction da, int amount)
 {
 	if(da.it != $item[none])
-		d.counts[da.it]++;
+		d.counts[da.it] += amount;
 	if(da.tool != $item[none])
-		d.counts[da.tool]++;
+		d.counts[da.tool] += amount;
 	if(da.mayo != $item[none])
-		d.counts[da.mayo]++;
+		d.counts[da.mayo] += amount;
 	if(da.organ == ORGAN_STOMACHE && use_seasoning())
-		d.counts[$item[Special Seasoning]]++;
+		d.counts[$item[Special Seasoning]] += amount;
 	if(da.sk == $skill[Sweet Synthesis])
 	{
 		item [int] greedCandies = sweet_synthesis_pair($effect[Synthesis: Greed]);
-		d.counts[greedCandies[0]]++;
-		d.counts[greedCandies[1]]++;
+		d.counts[greedCandies[0]] += amount;
+		d.counts[greedCandies[1]] += amount;
 	}
+	else if(da.sk == $skill[Ancestral Recall])
+		d.counts[$item[blue mana]] += amount;
+}
+
+void add_counts(Diet d, DietAction da)
+{
+	d.change_counts(da, 1);
 }
 
 void remove_counts(Diet d, DietAction da)
 {
-	if(da.it != $item[none])
-		d.counts[da.it]--;
-	if(da.tool != $item[none])
-		d.counts[da.tool]--;
-	if(da.mayo != $item[none])
-		d.counts[da.mayo]--;
-	if(da.organ == ORGAN_STOMACHE && use_seasoning())
-		d.counts[$item[Special Seasoning]]--;
-	if(da.sk == $skill[Sweet Synthesis])
-	{
-		item [int] greedCandies = sweet_synthesis_pair($effect[Synthesis: Greed]);
-		d.counts[greedCandies[0]]--;
-		d.counts[greedCandies[1]]--;
-	}
+	d.change_counts(da, -1);
 }
 
 boolean add_action(Diet d, DietAction da)

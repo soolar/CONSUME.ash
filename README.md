@@ -44,6 +44,7 @@ mafia preference to track its use (that I could find, at least)
 * Organ cleaning consumables (hobopolis/batfellow consumables)
 * Considers cost of ingredients to make an item
 * Essential tofu
+* Ancestral Recall
 
 ## Todo
 

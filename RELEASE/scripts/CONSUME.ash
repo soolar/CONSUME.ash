@@ -57,6 +57,10 @@ Range get_adventures(DietAction da)
 			advs.add(3);
 			break;
 	}
+
+	if(da.sk == $skill[Ancestral Recall])
+		advs.add(3);
+
 	return advs;
 }
 
@@ -79,6 +83,8 @@ float get_value(DietAction da)
 		int greedPrice = greedCandies[0].item_price() + greedCandies[1].item_price();
 		value += BASE_MEAT * 3 * 30 - greedPrice;
 	}
+	else if(da.sk == $skill[Ancestral Recall])
+		value -= $item[blue mana].item_price();
 
 	if(firstPassComplete)
 	{
@@ -491,6 +497,18 @@ void handle_special_items(Diet d, OrganSpace space)
 		useTofu.organ = ORGAN_NONE;
 		if(useTofu.get_value() > 0)
 			d.add_action(useTofu);
+	}
+
+	if(have_skill($skill[Ancestral Recall]) && d.within_limit($item[blue mana]))
+	{
+		DietAction castRecall;
+		castRecall.sk = $skill[Ancestral Recall];
+		castRecall.organ = ORGAN_NONE;
+		if(castRecall.get_value() > 0)
+		{
+			while(d.within_limit($item[blue mana]))
+				d.add_action(castRecall);
+		}
 	}
 }
 
