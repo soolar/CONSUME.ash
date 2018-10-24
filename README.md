@@ -63,5 +63,5 @@ In rough order of importance:
 
 I'm writing this script for my own sake, but my clannies at Reddit United have been very supportive!
 
-Especially Rag Nymph (#2662313), JorGen Van Doe (#3069483), and aurumbos (#2343846), all of whom have 
-made my time all the more worthwhile with their kind donations!
+Especially Rag Nymph (#2662313), JorGen Van Doe (#3069483), aurumbos (#2343846), and Lyft (#3045223)
+all of whom have made my time all the more worthwhile with their kind donations!
