@@ -16,7 +16,10 @@ First, work out how much meat an adventure is worth to you, and then enter
 <pre>
 set valueOfAdventure=that number
 </pre>
-After that, type CONSUME in the gCLI. The output will be a sequence of commands you can copy/paste in to the gCLI to execute your chosen diet.
+After that, type CONSUME HELP in the gCLI to get a list of what you can do.
+The output from CONSUME SIM can simply be copy/pasted in to the gCLI, if you so
+desire, but repeat runs within the same session barely take any additional time,
+so running CONSUME ALL after CONSUME SIM should be fine.
 
 You can also set CONSUME.BASEMEAT to the base meat of whatever zone you meatfarm (if you meatfarm)
 in order to have CONSUME consider the value of meat buffs in your diet. So far it only supports
@@ -45,6 +48,7 @@ mafia preference to track its use (that I could find, at least)
 * Considers cost of ingredients to make an item
 * Essential tofu
 * Ancestral Recall
+* Nightcapping
 
 ## Todo
 
