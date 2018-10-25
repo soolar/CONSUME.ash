@@ -179,6 +179,10 @@ int daily_limit(item it)
 			return get_property("_essentialTofuUsed").to_boolean() ? 0 : 1;
 		case $item[blue mana]:
 			return 10 - get_property("_ancestralRecallCasts").to_int();
+		case $item[alien animal milk]:
+			return get_property("_alienAnimalMilkUsed").to_boolean() ? 0 : 1;
+		case $item[alien plant pod]:
+			return get_property("_alienPlantPodUsed").to_boolean() ? 0 : 1;
 		// batfellow consumables
 		case $item[Kudzu salad]:
 		case $item[Mansquito Serum]:

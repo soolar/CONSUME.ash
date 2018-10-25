@@ -490,6 +490,34 @@ void handle_special_items(Diet d, OrganSpace space, OrganSpace max)
 		}
 	}
 
+	if(d.within_limit($item[alien animal milk]))
+	{
+		float alienMilkValue = stomache_value(3) - $item[alien animal milk].item_price();
+		if(alienMilkValue > 0)
+		{
+			Consumable alienMilk;
+			alienMilk.it = $item[alien animal milk];
+			alienMilk.organ = ORGAN_NONE;
+			alienMilk.cleanings[0] = new OrganCleaning(ORGAN_STOMACHE, 3);
+			d.handle_organ_cleanings(alienMilk, space, max);
+			d.add_action(alienMilk.to_action(d));
+		}
+	}
+
+	if(d.within_limit($item[alien plant pod]))
+	{
+		float plantPodValue = liver_value(3) - $item[alien plant pod].item_price();
+		if(plantPodValue > 0)
+		{
+			Consumable plantPod;
+			plantPod.it = $item[alien plant pod];
+			plantPod.organ = ORGAN_NONE;
+			plantPod.cleanings[0] = new OrganCleaning(ORGAN_LIVER, 3);
+			d.handle_organ_cleanings(plantPod, space, max);
+			d.add_action(plantPod.to_action(d));
+		}
+	}
+
 	if(d.within_limit($item[essential tofu]))
 	{
 		DietAction useTofu;

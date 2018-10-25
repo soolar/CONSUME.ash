@@ -32,6 +32,7 @@ is what you would want to do if you are farming barf mountain and have the songb
 ## Supported
 
 * General diet
+* Nightcapping
 * Mojo filters
 * Spice melange
 * Ultra Mega Sour Ball
@@ -48,7 +49,8 @@ mafia preference to track its use (that I could find, at least)
 * Considers cost of ingredients to make an item
 * Essential tofu
 * Ancestral Recall
-* Nightcapping
+* Alien plant pod
+* Alien animal milk
 
 ## Todo
 
