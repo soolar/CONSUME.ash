@@ -290,3 +290,23 @@ float total_profit(Diet d)
 		profit += da.get_value();
 	return profit;
 }
+
+boolean has_lasanga(Diet d)
+{
+	foreach i,da in d.actions
+	{
+		if(da.it.is_lasagna())
+			return true;
+	}
+	return false;
+}
+
+boolean has_wine(Diet d)
+{
+	foreach i,da in d.actions
+	{
+		if(da.it.is_wine())
+			return true;
+	}
+	return false;
+}

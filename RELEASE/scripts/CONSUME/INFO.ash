@@ -189,6 +189,21 @@ boolean is_saucy(item it)
 	return saucyList contains it;
 }
 
+boolean is_lasagna(item it)
+{
+	boolean [item] lasagnaList = $items[
+		gnat lasagna,
+		long pork lasagna,
+		fishy fish lasagna,
+	];
+	return lasagnaList contains it;
+}
+
+boolean is_monday()
+{
+	return numeric_modifier($item[tuesday's ruby], "muscle percent") == 5.0;
+}
+
 int daily_limit(item it)
 {
 	switch(it)

@@ -33,11 +33,10 @@ Range get_adventures(DietAction da)
 			advs.add(1);
 		if(da.mayo == $item[Mayoflex])
 			advs.add(1);
-		if(da.it.is_saucy())// && have_skill($skill[Saucemaven]))
-		{
-			print(da.it, "yellow");
+		if(da.it.is_saucy()) && have_skill($skill[Saucemaven]))
 			advs.add($classes[Pastamancer, Sauceror] contains my_class() ? 5 : 3);
-		}
+		if(da.it.is_lasagna() && !is_monday())
+			advs.add(5);
 		advs.add(da.space); // account for milk
 	}
 	else if(da.organ == ORGAN_LIVER)
@@ -179,7 +178,7 @@ void evaluate_consumables()
 	// can't directly assign this to lookups or it becomes a constant
 	foreach it in $items[frosty's frosty mug, ol' scratch's salad fork,
 		Special Seasoning, mojo filter, fudge spork, essential tofu,
-		milk of magnesium]
+		milk of magnesium, alien plant pod, alien animal milk]
 		lookups[it] = true;
 	foreach it in $items[]
 	{
@@ -717,6 +716,15 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 		}
 	}
 	handle_chocolates(d);
+
+	// prepend potion of the field gar if necessary
+	if(d.has_lasagna())
+	{
+		DietAction useGar;
+		useGar.it = $item[potion of the field gar];
+		useGar.organ = ORGAN_NONE;
+		d.insert_action(useGar, 0);
+	}
 
 	// prepend milk and ode
 	OrganSpace spaceTaken = d.total_space();
