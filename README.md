@@ -33,6 +33,7 @@ is what you would want to do if you are farming barf mountain and have the songb
 
 * General diet
 * Nightcapping
+* Saucemaven
 * Mojo filters
 * Spice melange
 * Ultra Mega Sour Ball

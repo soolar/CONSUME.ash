@@ -33,6 +33,11 @@ Range get_adventures(DietAction da)
 			advs.add(1);
 		if(da.mayo == $item[Mayoflex])
 			advs.add(1);
+		if(da.it.is_saucy())// && have_skill($skill[Saucemaven]))
+		{
+			print(da.it, "yellow");
+			advs.add($classes[Pastamancer, Sauceror] contains my_class() ? 5 : 3);
+		}
 		advs.add(da.space); // account for milk
 	}
 	else if(da.organ == ORGAN_LIVER)

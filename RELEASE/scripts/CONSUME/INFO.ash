@@ -161,6 +161,34 @@ boolean is_martini(item it)
 	return martiniList contains it;
 }
 
+boolean is_saucy(item it)
+{
+	boolean [item] saucyList = $items[
+		cold hi mein,
+		devil hair pasta,
+		Fettris,
+		fettucini Inconnu,
+		fleetwood mac 'n' cheese,
+		fusillocybin,
+		gnocchetti di Nietzsche,
+		Hell ramen,
+		hot hi mein,
+		libertagliatelle,
+		linguini immondizia bianco,
+		linguini of the sea,
+		prescription noodles,
+		shells a la shellfish,
+		sleazy hi mein,
+		spagecialetti,
+		spaghetti con calaveras,
+		spaghetti with Skullheads,
+		spooky hi mein,
+		stinky hi mein,
+		turkish mostaccioli,
+	];
+	return saucyList contains it;
+}
+
 int daily_limit(item it)
 {
 	switch(it)
