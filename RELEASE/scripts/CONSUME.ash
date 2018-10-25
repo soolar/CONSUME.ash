@@ -386,9 +386,9 @@ Consumable best_liver(Diet d, int space)
 	return res;
 }
 
-void handle_organ_cleanings(Diet d, Consumable c, OrganSpace space);
+void handle_organ_cleanings(Diet d, Consumable c, OrganSpace space, OrganSpace max);
 
-void fill_spleen(Diet d, OrganSpace space)
+void fill_spleen(Diet d, OrganSpace space, OrganSpace max)
 {
 	while(space.spleen > 0)
 	{
@@ -403,14 +403,14 @@ void fill_spleen(Diet d, OrganSpace space)
 		print("Failed to fully fill spleen! " + space.spleen + " left...", "red");
 }
 
-void fill_stomache(Diet d, OrganSpace space)
+void fill_stomache(Diet d, OrganSpace space, OrganSpace max)
 {
 	while(space.fullness > 0)
 	{
 		Consumable best = d.best_stomache(space.fullness);
 		if(best.is_nothing())
 			break;
-		handle_organ_cleanings(d, best, space);
+		handle_organ_cleanings(d, best, space, max);
 		space.fullness -= best.space;
 		DietAction da = best.to_action(d);
 		d.add_action(da);
@@ -421,14 +421,14 @@ void fill_stomache(Diet d, OrganSpace space)
 		print("Failed to fully fill stomache! " + space.fullness + " left...", "red");
 }
 
-void fill_liver(Diet d, OrganSpace space)
+void fill_liver(Diet d, OrganSpace space, OrganSpace max)
 {
 	while(space.inebriety > 0)
 	{
 		Consumable best = d.best_liver(space.inebriety);
 		if(best.is_nothing())
 			break;
-		handle_organ_cleanings(d, best, space);
+		handle_organ_cleanings(d, best, space, max);
 		space.inebriety -= best.space;
 		DietAction da = best.to_action(d);
 		d.add_action(da);
@@ -437,7 +437,7 @@ void fill_liver(Diet d, OrganSpace space)
 		print("Failed to fully fill liver! " + space.inebriety + " left...", "red");
 }
 
-void handle_special_items(Diet d, OrganSpace space)
+void handle_special_items(Diet d, OrganSpace space, OrganSpace max)
 {
 	if(mojoFiltersUseable > 0)
 	{
@@ -451,7 +451,7 @@ void handle_special_items(Diet d, OrganSpace space)
 			mojoFilter.cleanings[0] = new OrganCleaning(ORGAN_SPLEEN, 1);
 			for(int i = 0; i < mojoFiltersUseable; ++i)
 			{
-				d.handle_organ_cleanings(mojoFilter, space);
+				d.handle_organ_cleanings(mojoFilter, space, max);
 				d.add_action(mojoFilter.to_action(d));
 			}
 			mojoFiltersUseable = 0;
@@ -469,7 +469,7 @@ void handle_special_items(Diet d, OrganSpace space)
 			spiceMelange.organ = ORGAN_NONE;
 			spiceMelange.cleanings[0] = new OrganCleaning(ORGAN_STOMACHE, 3);
 			spiceMelange.cleanings[1] = new OrganCleaning(ORGAN_LIVER, 3);
-			d.handle_organ_cleanings(spiceMelange, space);
+			d.handle_organ_cleanings(spiceMelange, space, max);
 			d.add_action(spiceMelange.to_action(d));
 		}
 	}
@@ -485,7 +485,7 @@ void handle_special_items(Diet d, OrganSpace space)
 			sourBall.organ = ORGAN_NONE;
 			sourBall.cleanings[0] = new OrganCleaning(ORGAN_STOMACHE, 3);
 			sourBall.cleanings[1] = new OrganCleaning(ORGAN_LIVER, 3);
-			d.handle_organ_cleanings(sourBall, space);
+			d.handle_organ_cleanings(sourBall, space, max);
 			d.add_action(sourBall.to_action(d));
 		}
 	}
@@ -512,25 +512,25 @@ void handle_special_items(Diet d, OrganSpace space)
 	}
 }
 
-void handle_organ_cleanings(Diet d, Consumable c, OrganSpace space)
+void handle_organ_cleanings(Diet d, Consumable c, OrganSpace space, OrganSpace max)
 {
 	foreach i,oc in c.cleanings
 	{
 		switch(oc.organ)
 		{
 			case ORGAN_SPLEEN:
-				if(space.spleen + oc.space > spleen_limit())
-					fill_spleen(d, space);
+				if(space.spleen + oc.space > max.spleen)
+					fill_spleen(d, space, max);
 				space.spleen += oc.space;
 				break;
 			case ORGAN_STOMACHE:
-				if(space.fullness + oc.space > fullness_limit())
-					fill_stomache(d, space);
+				if(space.fullness + oc.space > max.fullness)
+					fill_stomache(d, space, max);
 				space.fullness += oc.space;
 				break;
 			case ORGAN_LIVER:
-				if(space.inebriety + oc.space > inebriety_limit())
-					fill_liver(d, space);
+				if(space.inebriety + oc.space > max.inebriety)
+					fill_liver(d, space, max);
 				space.inebriety += oc.space;
 				break;
 		}
@@ -631,7 +631,7 @@ void handle_chocolates(Diet d)
 	}
 }
 
-Diet get_diet(OrganSpace space)
+Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 {
 	evaluate_consumables_if_needed();
 
@@ -643,36 +643,45 @@ Diet get_diet(OrganSpace space)
 	{
 		int actualLiver = space.inebriety;
 		space.inebriety = 1;
-		fill_liver(d, space);
+		fill_liver(d, space, max);
 		space.inebriety += actualLiver;
 	}
 
 	if(space.fullness <= 0 && space.inebriety <= 0 && space.spleen <= 0)
 	{
-		handle_special_items(d, space);
+		handle_special_items(d, space, max);
 	}
 
 	while(space.fullness > 0 || space.inebriety > 0 || space.spleen > 0)
 	{
 		if(space.spleen > 0)
 		{
-			fill_spleen(d, space);
+			fill_spleen(d, space, max);
 			if(space.spleen > 0)
 			 break;
 		}
 		if(space.fullness > 0)
 		{
-			fill_stomache(d, space);
+			fill_stomache(d, space, max);
 			if(space.fullness > 0)
 				break;
 		}
 		if(space.inebriety > 0)
 		{
-			fill_liver(d, space);
+			fill_liver(d, space, max);
 			if(space.inebriety > 0)
 				break;
 		}
-		handle_special_items(d, space);
+		handle_special_items(d, space, max);
+
+		if(nightcap && space.fullness <= 0 && space.inebriety <= 0 && space.spleen <= 0)
+		{
+			nightcap = false;
+			sort booze by -value.get_value(d);
+			d.add_action(booze[0].to_action(d));
+			d.handle_organ_cleanings(booze[0], space, max);
+			sort booze by -value.get_value(d) / value.space;
+		}
 	}
 	handle_chocolates(d);
 
@@ -739,9 +748,11 @@ Diet get_diet(OrganSpace space)
 	return d;
 }
 
-Diet get_diet(int stom, int liv, int sple)
+Diet get_diet(int stom, int liv, int sple, boolean nightcap)
 {
-	return get_diet(new OrganSpace(stom, liv, sple));
+	return get_diet(new OrganSpace(stom, liv, sple),
+		new OrganSpace(fullness_limit(), inebriety_limit(), spleen_limit()),
+		nightcap);
 }
 
 void append_item(buffer b, item it, int organ, int amount)
@@ -847,11 +858,113 @@ void print_diet(Diet d)
 		space.inebriety + " liver, and " + space.spleen + " spleen");
 }
 
-void main()
+void main(string command)
 {
+	if(command.to_upper_case() != command)
+	{
+		print("CONSUME only accepts superior capital letters!", "red");
+		return;
+	}
+
+	boolean simulate = true;
+	// this is set if SIM is present in the command, overrides NIGHTCAP and ALL
+	boolean seriouslySimulate = false;
+	boolean nightcap = false;
+	int fullness = fullness_limit() - my_fullness();
+	int fullnessLimit = fullness_limit();
+	int inebriety = inebriety_limit() - my_inebriety();
+	int inebrietyLimit = inebriety_limit();
+	int spleen = spleen_limit() - my_spleen_use();
+	int spleenLimit = spleen_limit();
+
+	string [int] commands = command.split_string("\\s+");
+
+	for(int i = 0; i < commands.count(); ++i)
+	{
+		switch(commands[i])
+		{
+			case "ALL":
+				simulate = false;
+				break;
+			case "SIM":
+				seriouslySimulate = true;
+				break;
+			case "NIGHTCAP":
+				simulate = false;
+				nightcap = true;
+				break;
+			case "ORGANS":
+				if(i + 3 < commands.count())
+				{
+					fullness = commands[i + 1].to_int();
+					inebriety = commands[i + 2].to_int();
+					spleen = commands[i + 3].to_int();
+					i += 3;
+				}
+				else
+				{
+					print("ORGANS requires three arguments: The amount of each organ " +
+						"to fill, in the order stomache, liver, spleen.", "red");
+					return;
+				}
+				break;
+			case "NOMEAT":
+				BASE_MEAT = 0;
+				break;
+			case "VALUE":
+				if(i + 1 < commands.count())
+				{
+					ADV_VALUE = commands[i + 1].to_int();
+					i += 1;
+				}
+				else
+				{
+					print("VALUE requires an argument: The amount to treat valueOfAdventure " +
+						"as for this run.", "red");
+					return;
+				}
+				break;
+			case "HELP":
+				print("CONSUME.ash Commands:", "blue");
+				print("ALL - Fill all organs, for real.");
+				print("SIM - Present a diet that would fill you up, but don't execute it.");
+				print("NIGHTCAP - Fill all organs and then overdrink. Can be combined with SIM.");
+				print("ORGANS X Y Z - Set the amount of each organ to fill. X Y and " +
+					"Z should be numbers corresponding to stomache, liver, and spleen " +
+					"respectively. Note that if you set these above your max, CONSUME " +
+					"may behave oddly.");
+				print("NOMEAT - Ignore CONSUME.BASEMEAT for this run.");
+				print("VALUE X - Treat valueOfAdventure as X for this run.");
+				print("CONSUME.ash Settings:", "blue");
+				print('You can change these settings by typing "set SETTING=VALUE" in the gCLI.');
+				print("valueOfAdventure - Technically a mafia property, not a CONSUME property, " +
+					"but it is listed here because it is highly relevant to CONSUME. " +
+					"Set this to however much meat you make in an adventure at the end of " +
+					"the day (after brief buffs like meat.enh and A View to Some Meat wear off). " +
+					"Or, more broadly, however much meat you consider an adventure to be worth.");
+				print("CONSUME.BASEMEAT - The base meat of the area you are meatfarmings. " +
+					"If you aren't meatfarming, leave this unset or set to 0. If you are farming " +
+					"Barf Mountain, this should be 250, or 275 if you own and use a Songboom.");
+				return;
+			default:
+				print('Unknown command "' + commands[i] + '"', "red");
+				print('Try "CONSUME HELP" to get a list of valid commands.', "red");
+				return;
+		}
+	}
+
+	if(seriouslySimulate)
+		simulate = true;
+
 	evaluate_consumables();
 
-	print_diet(get_diet(fullness_limit() - my_fullness(),
-		inebriety_limit() - my_inebriety(),
-		spleen_limit() - my_spleen_use()));
+	Diet d = get_diet(fullness, inebriety, spleen, nightcap);
+	print_diet(d);
+
+	if(!simulate)
+	{
+		buffer b;
+		b.append_diet(d);
+		cli_execute(b.to_string());
+	}
 }
