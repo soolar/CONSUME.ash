@@ -87,8 +87,8 @@ first multiply 275 by 11 to get 3025.
 
 Now for the tricky part. We need to add
 every additional source of meat from our shiny toys. First of all, the widely
-popular mafia pinky ring. This does NOT count the songboom addition to +meat,
-but is otherwise 200% meat dropped on a crit on average, so add 500 for 3525.
+popular mafia pointer finger ring. This does NOT count the songboom addition to
++meat, but is otherwise 200% meat dropped on a crit on average, so add 500 for 3525.
 
 Next, Mr. Screege's spectacles. Between the meat items it drops and the pure
 meat it drops, from what I hear it drops an average of roughly 180 MPA, besides
