@@ -33,7 +33,7 @@ Range get_adventures(DietAction da)
 			advs.add(1);
 		if(da.mayo == $item[Mayoflex])
 			advs.add(1);
-		if(da.it.is_saucy()) && have_skill($skill[Saucemaven]))
+		if(da.it.is_saucy() && have_skill($skill[Saucemaven]))
 			advs.add($classes[Pastamancer, Sauceror] contains my_class() ? 5 : 3);
 		if(da.it.is_lasagna() && !is_monday())
 			advs.add(5);

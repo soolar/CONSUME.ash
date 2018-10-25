@@ -291,7 +291,7 @@ float total_profit(Diet d)
 	return profit;
 }
 
-boolean has_lasanga(Diet d)
+boolean has_lasagna(Diet d)
 {
 	foreach i,da in d.actions
 	{
