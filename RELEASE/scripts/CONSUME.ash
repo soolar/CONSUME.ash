@@ -64,6 +64,8 @@ Range get_adventures(DietAction da)
 
 	if(da.sk == $skill[Ancestral Recall])
 		advs.add(3);
+	if(da.it == $item[Hunger&trade; Sauce])
+		advs.add(3);
 
 	return advs;
 }
@@ -176,9 +178,19 @@ void evaluate_consumables()
 	clear(spleenies);
 	boolean [item] lookups;
 	// can't directly assign this to lookups or it becomes a constant
-	foreach it in $items[frosty's frosty mug, ol' scratch's salad fork,
-		Special Seasoning, mojo filter, fudge spork, essential tofu,
-		milk of magnesium, alien plant pod, alien animal milk]
+	foreach it in $items[
+		frosty's frosty mug,
+		ol' scratch's salad fork,
+		Special Seasoning,
+		mojo filter,
+		fudge spork,
+		essential tofu,
+		milk of magnesium,
+		alien plant pod,
+		alien animal milk,
+		Hunger&trade; Sauce,
+		ultra mega sour ball,
+	]
 		lookups[it] = true;
 	foreach it in $items[]
 	{
@@ -193,6 +205,12 @@ void evaluate_consumables()
 
 		if(BASE_MEAT > 0 && have_skill($skill[Sweet Synthesis]) && it.candy_type == "complex" &&
 			sweet_synthesis_pairing($effect[Synthesis: Greed], it).count() > 0)
+		{
+			lookups[it] = true;
+			continue;
+		}
+
+		if(it == $item[blue mana] && have_skill($skill[Ancestral Recall]))
 		{
 			lookups[it] = true;
 			continue;
@@ -716,6 +734,16 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 		}
 	}
 	handle_chocolates(d);
+
+	// prepend hunger sauce if it's good and you're eating any food
+	if(d.total_organ_fillers(ORGAN_STOMACHE) > 0)
+	{
+		DietAction useHungerSauce;
+		useHungerSauce.it = $item[Hunger&trade; Sauce];
+		useHungerSauce.organ = ORGAN_NONE;
+		if(useHungerSauce.get_value() > 0)
+			d.insert_action(useHungerSauce, 0);
+	}
 
 	// prepend potion of the field gar if necessary
 	if(d.has_lasagna())

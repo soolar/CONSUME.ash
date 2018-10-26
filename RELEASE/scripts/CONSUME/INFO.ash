@@ -228,6 +228,8 @@ int daily_limit(item it)
 			return get_property("_alienPlantPodUsed").to_boolean() ? 0 : 1;
 		case $item[affirmation cookie]:
 			return get_property("_affirmationCookieEaten").to_boolean() ? 0 : 1;
+		case $item[Hunger&trade; Sauce]:
+			return get_property("_hungerSauceUsed").to_boolean() ? 0 : 1;
 		// batfellow consumables
 		case $item[Kudzu salad]:
 		case $item[Mansquito Serum]:
