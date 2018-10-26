@@ -53,6 +53,7 @@ mafia preference to track its use (that I could find, at least)
 * Ancestral Recall
 * Alien plant pod
 * Alien animal milk
+* Hunger&trade; Sauce
 
 ## Todo
 
