@@ -55,19 +55,6 @@ mafia preference to track its use (that I could find, at least)
 * Alien animal milk
 * Hunger&trade; Sauce
 
-## Todo
-
-In rough order of importance:
-* Optionally consider meat buffs from food/booze/spleen
-* Improve item price calculation
-* Improve diet execution with some safeguards
-* Handle pvp fight generation
-* Handle cleaners other than spice melange and UMSB
-* Consider mayonnaise other than mayoflex
-* Consider refined palate
-* Consider drunki-bears (maybe)
-* Probably much more I haven't though of yet
-
 # Calculating valueOfAdventure
 
 valueOfAdventure can be a little tricky to get right. Contrary to popular belief,
