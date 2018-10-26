@@ -36,7 +36,7 @@ Range get_adventures(DietAction da)
 		if(da.it.is_saucy() && have_skill($skill[Saucemaven]))
 			advs.add($classes[Pastamancer, Sauceror] contains my_class() ? 5 : 3);
 		if(da.it.is_lasagna() && !is_monday())
-			advs.add(5);
+			advs.add(5); // account for potion of the field gar
 		advs.add(da.space); // account for milk
 	}
 	else if(da.organ == ORGAN_LIVER)
@@ -221,7 +221,7 @@ void evaluate_consumables()
 			continue;
 
 		float advs_per_space = c.it.get_adventures().average() / c.space;
-		if((c.organ == ORGAN_STOMACHE && advs_per_space >= 5) || // 5 for food idk
+		if((c.organ == ORGAN_STOMACHE && advs_per_space >= 4.5) || // 4.5 for food idk
 			(c.organ == ORGAN_LIVER && advs_per_space >= 6) || // 6 for liver because elemental caipiroska
 			(c.organ == ORGAN_SPLEEN && advs_per_space > 0)) // anything for spleen
 		{
