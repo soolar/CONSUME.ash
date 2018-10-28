@@ -58,6 +58,7 @@ mafia preference to track its use (that I could find, at least)
 * cuppa Sobrie tea
 * sweet tooth
 * lupine appetite hormones
+* Stooper (when nightcapping)
 
 # Calculating valueOfAdventure
 

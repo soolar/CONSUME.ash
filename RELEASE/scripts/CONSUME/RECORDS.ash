@@ -112,7 +112,8 @@ boolean is_same(DietAction da1, DietAction da2)
 	return da1.it == da2.it &&
 		da1.sk == da2.sk &&
 		da1.tool == da2.tool &&
-		da1.mayo == da2.mayo;
+		da1.mayo == da2.mayo &&
+		da1.organ == da2.organ;
 }
 
 //=============================================================================

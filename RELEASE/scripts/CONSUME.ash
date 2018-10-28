@@ -716,11 +716,19 @@ void handle_stomache_expander(Diet d, OrganSpace space, OrganSpace max, item exp
 	}
 }
 
-void handle_organ_expanders(Diet d, OrganSpace space, OrganSpace max)
+void handle_organ_expanders(Diet d, OrganSpace space, OrganSpace max, boolean nightcap)
 {
 	d.handle_stomache_expander(space, max, $item[cuppa Voraci tea], 1);
 	d.handle_stomache_expander(space, max, $item[sweet tooth], 1);
 	d.handle_stomache_expander(space, max, $item[lupine appetite hormones], 3);
+	if(nightcap)
+	{
+		DietAction useStooper;
+		useStooper.organ = ORGAN_STOOPER;
+		d.add_action(useStooper);
+		space.inebriety += 1;
+		max.inebriety += 1;
+	}
 }
 
 Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
@@ -729,7 +737,7 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 
 	Diet d;
 
-	d.handle_organ_expanders(space, max);
+	d.handle_organ_expanders(space, max, nightcap);
 
 	// do the shotglass drink first
 	if(item_amount($item[mime army shotglass]) > 0 &&
@@ -917,6 +925,8 @@ void append_diet_action(buffer b, DietAction da, int amount, Diet d)
 		b.append(da.sk.to_string());
 		b.append("; ");
 	}
+	else if(da.organ == ORGAN_STOOPER)
+		b.append("familiar stooper; ");
 	//else
 		//print("BAD OCCURED", "red");
 }
