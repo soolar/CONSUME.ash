@@ -59,6 +59,8 @@ mafia preference to track its use (that I could find, at least)
 * sweet tooth
 * lupine appetite hormones
 * Stooper (when nightcapping)
+* Maximizing for hp, hot res, and cold res if using any forks or mugs
+* Restoring equipment to how it was before running the script if anything changed
 
 # Calculating valueOfAdventure
 

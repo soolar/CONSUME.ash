@@ -2,8 +2,12 @@ int ORGAN_STOMACHE = 1;
 int ORGAN_LIVER = 2;
 int ORGAN_SPLEEN = 3;
 int ORGAN_NONE = 4;
-int ORGAN_STOOPER = 5; // ok now this is getting out of hand
-int ORGAN_EQUIP = 6;
+int ORGAN_EQUIP = 5;
+// anything from here on is less of an organ and more of a specific command
+int ORGAN_STOOPER = 6; // familiar stooper
+int ORGAN_MAXIMIZE_FOR_FORK_MUG = 7; // maximize hp,10cold res,10hot res
+int ORGAN_CHECKPOINT = 8; // checkpoint
+int ORGAN_RESTORE = 9; // outfit checkpoint
 
 int MAX_MEAT = 999999999999;
 

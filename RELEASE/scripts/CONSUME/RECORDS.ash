@@ -322,3 +322,23 @@ boolean has_martini(Diet d)
 	}
 	return false;
 }
+
+boolean has_equipment_changes(Diet d)
+{
+	foreach i,da in d.actions
+	{
+		if(da.organ == ORGAN_EQUIP || da.organ == ORGAN_MAXIMIZE_FOR_FORK_MUG)
+			return true;
+	}
+	return false;
+}
+
+boolean has_fork_mug(Diet d)
+{
+	foreach i,da in d.actions
+	{
+		if($items[Ol' Scratch's salad fork, Frosty's frosty mug] contains da.tool)
+			return true;
+	}
+	return false;
+}

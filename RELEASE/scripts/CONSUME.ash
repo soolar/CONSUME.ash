@@ -824,6 +824,14 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 		d.insert_action(equipTuxedoShirt, 0);
 	}
 
+	// prepend maximizing for fork and mug if needed
+	if(d.has_fork_mug())
+	{
+		DietAction maximizeForkMug;
+		maximizeForkMug.organ = ORGAN_MAXIMIZE_FOR_FORK_MUG;
+		d.insert_action(maximizeForkMug, 0);
+	}
+
 	// prepend milk and ode
 	OrganSpace spaceTaken = d.total_space();
 	int milkTurns = have_effect($effect[got milk]);
@@ -882,6 +890,16 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 				}
 			}
 		}
+	}
+
+	if(d.has_equipment_changes())
+	{
+		DietAction checkpoint;
+		checkpoint.organ = ORGAN_CHECKPOINT;
+		DietAction restore;
+		restore.organ = ORGAN_RESTORE;
+		d.insert_action(checkpoint, 0);
+		d.add_action(restore);
 	}
 
 	return d;
@@ -946,6 +964,12 @@ void append_diet_action(buffer b, DietAction da, int amount, Diet d)
 	}
 	else if(da.organ == ORGAN_STOOPER)
 		b.append("familiar stooper; ");
+	else if(da.organ == ORGAN_MAXIMIZE_FOR_FORK_MUG)
+		b.append("maximize hp,10cold res,10hot res; ");
+	else if(da.organ == ORGAN_CHECKPOINT)
+		b.append("checkpoint; ");
+	else if(da.organ == ORGAN_RESTORE)
+		b.append("outfit checkpoint; ");
 	//else
 		//print("BAD OCCURED", "red");
 }
