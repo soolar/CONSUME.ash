@@ -640,7 +640,7 @@ void handle_chocolates(Diet d)
 			bestVal = normalVal;
 			best = cheapestNormal;
 		}
-		if(classVal > bestVal)
+		if(classChoco != $item[none] && classVal > bestVal)
 		{
 			bestVal = classVal;
 			best = classChoco;
