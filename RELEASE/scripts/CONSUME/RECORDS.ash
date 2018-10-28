@@ -155,7 +155,8 @@ DietAction to_action(Consumable c, Diet d)
 
 void change_counts(Diet d, DietAction da, int amount)
 {
-	if(da.it != $item[none])
+	// it won't recommend equipment you don't already have
+	if(da.it != $item[none] && da.organ != ORGAN_EQUIP) 
 		d.counts[da.it] += amount;
 	if(da.tool != $item[none])
 		d.counts[da.tool] += amount;
@@ -307,6 +308,16 @@ boolean has_wine(Diet d)
 	foreach i,da in d.actions
 	{
 		if(da.it.is_wine())
+			return true;
+	}
+	return false;
+}
+
+boolean has_martini(Diet d)
+{
+	foreach i,da in d.actions
+	{
+		if(da.it.is_martini())
 			return true;
 	}
 	return false;

@@ -806,6 +806,24 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 		d.insert_action(useGar, 0);
 	}
 
+	// prepend equipping pinky ring is necessary
+	if(havePinkyRing && d.has_wine())
+	{
+		DietAction equipPinkyRing;
+		equipPinkyRing.it = $item[mafia pinky ring];
+		equipPinkyRing.organ = ORGAN_EQUIP;
+		d.insert_action(equipPinkyRing, 0);
+	}
+
+	// prepend equipping tuxedo shirt if necessary
+	if(haveTuxedoShirt && d.has_martini())
+	{
+		DietAction equipTuxedoShirt;
+		equipTuxedoShirt.it = $item[tuxedo shirt];
+		equipTuxedoShirt.organ = ORGAN_EQUIP;
+		d.insert_action(equipTuxedoShirt, 0);
+	}
+
 	// prepend milk and ode
 	OrganSpace spaceTaken = d.total_space();
 	int milkTurns = have_effect($effect[got milk]);
@@ -884,6 +902,7 @@ void append_item(buffer b, item it, int organ, int amount)
 		case ORGAN_LIVER: b.append("drink "); break;
 		case ORGAN_SPLEEN: b.append("chew "); break; // maybe someday?
 		case ORGAN_NONE: b.append("use "); break;
+		case ORGAN_EQUIP: b.append("equip "); break;
 		default: print("Umm... Something happened?", "red"); break;
 	}
 	if(amount != 1)
