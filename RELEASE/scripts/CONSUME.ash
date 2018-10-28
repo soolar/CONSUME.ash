@@ -190,6 +190,10 @@ void evaluate_consumables()
 		alien animal milk,
 		Hunger&trade; Sauce,
 		ultra mega sour ball,
+		sweet tooth,
+		cuppa Voraci tea,
+		cuppa Sobrie tea,
+		lupine appetite hormones,
 	]
 		lookups[it] = true;
 	foreach it in $items[]
@@ -540,6 +544,20 @@ void handle_special_items(Diet d, OrganSpace space, OrganSpace max)
 		}
 	}
 
+	if(d.within_limit($item[cuppa Sobrie tea]))
+	{
+		float sobrieTeaValue = liver_value(1) - $item[cuppa Sobrie tea].item_price();
+		if(sobrieTeaValue > 0)
+		{
+			Consumable sobrieTea;
+			sobrieTea.it = $item[cuppa Sobrie tea];
+			sobrieTea.organ = ORGAN_NONE;
+			sobrieTea.cleanings[0] = new OrganCleaning(ORGAN_LIVER, 1);
+			d.handle_organ_cleanings(sobrieTea, space, max);
+			d.add_action(sobrieTea.to_action(d));
+		}
+	}
+
 	if(d.within_limit($item[essential tofu]))
 	{
 		DietAction useTofu;
@@ -681,11 +699,37 @@ void handle_chocolates(Diet d)
 	}
 }
 
+void handle_stomache_expander(Diet d, OrganSpace space, OrganSpace max, item expander, int expansion)
+{
+	if(!d.within_limit(expander))
+		return;
+	int valueExpander = stomache_value(space.fullness + expansion) -
+		stomache_value(space.fullness) - expander.item_price();
+	if(valueExpander > 0)
+	{
+		DietAction useExpander;
+		useExpander.it = expander;
+		useExpander.organ = ORGAN_NONE;
+		d.add_action(useExpander);
+		space.fullness += expansion;
+		max.fullness += expansion;
+	}
+}
+
+void handle_organ_expanders(Diet d, OrganSpace space, OrganSpace max)
+{
+	d.handle_stomache_expander(space, max, $item[cuppa Voraci tea], 1);
+	d.handle_stomache_expander(space, max, $item[sweet tooth], 1);
+	d.handle_stomache_expander(space, max, $item[lupine appetite hormones], 3);
+}
+
 Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 {
 	evaluate_consumables_if_needed();
 
 	Diet d;
+
+	d.handle_organ_expanders(space, max);
 
 	// do the shotglass drink first
 	if(item_amount($item[mime army shotglass]) > 0 &&

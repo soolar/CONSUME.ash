@@ -230,6 +230,12 @@ int daily_limit(item it)
 			return get_property("_affirmationCookieEaten").to_boolean() ? 0 : 1;
 		case $item[Hunger&trade; Sauce]:
 			return get_property("_hungerSauceUsed").to_boolean() ? 0 : 1;
+		case $item[cuppa Voraci tea]:
+			return get_property("_voraciTeaUsed").to_boolean() ? 0 : 1;
+		case $item[cuppa Sobrie tea]:
+			return get_property("_sobrieTeaUsed").to_boolean() ? 0 : 1;
+		case $item[lupine appetite hormones]:
+			return get_property("_lupineHormonesUsed").to_boolean() ? 0 : 1;
 		// batfellow consumables
 		case $item[Kudzu salad]:
 		case $item[Mansquito Serum]:

@@ -54,6 +54,10 @@ mafia preference to track its use (that I could find, at least)
 * Alien plant pod
 * Alien animal milk
 * Hunger&trade; Sauce
+* cuppa Voraci tea
+* cuppa Sobrie tea
+* sweet tooth
+* lupine appetite hormones
 
 # Calculating valueOfAdventure
 
