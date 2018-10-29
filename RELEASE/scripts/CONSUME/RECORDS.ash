@@ -253,11 +253,49 @@ int total_cost(Diet d)
 
 Range get_adventures(DietAction da);
 
+int get_choco_adventures(Diet d)
+{
+	int normalChocoUsed = get_property("_chocolatesUsed").to_int();
+	int vitaChocoUsed = get_property("_vitachocCapsulesUsed").to_int();
+	int cigarChocoUsed = get_property("_chocolateCigarsUsed").to_int();
+	int artChocoUsed = 0; // some day there will be a mafia property for this
+
+	item classChoco = get_class_chocolate(my_class());
+	boolean [item] classChocos;
+	foreach c in $classes[Seal Clubber, Turtle Tamer, Pastamancer,
+		Sauceror, Disco Bandit, Accordion Thief]
+		classChocos[get_class_chocolate(c)] = true;
+
+	int advs = 0;
+
+	foreach i,da in d.actions
+	{
+		if(da.it.chocolate)
+		{
+			if(da.it == classChoco)
+				advs += 3 - normalChocoUsed++;
+			else if(classChocos contains da.it)
+				advs += 2 - normalChocoUsed++;
+			else if(da.it == $item[vitachoconutriment capsule])
+				advs += 5 - 2 * vitaChocoUsed++;
+			else if(da.it == $item[chocolate cigar])
+				advs += 5 - 2 * cigarChocoUsed++;
+			else if(da.it == $item[fancy chocolate sculpture])
+				advs += 5 - 2 * artChocoUsed++;
+			else
+				advs += 5 - 2 * normalChocoUsed++;
+		}
+	}
+
+	return advs;
+}
+
 Range total_adventures(Diet d)
 {
 	Range totalAdventures = new Range(0, 0);
 	foreach i,da in d.actions
 		totalAdventures.add(da.get_adventures());
+	totalAdventures.add(d.get_choco_adventures());
 	return totalAdventures;
 }
 

@@ -323,7 +323,7 @@ int my_accordion_buff_duration()
 	foreach it in get_inventory()
 	{
 		int duration = accordion_buff_duration(it);
-		if(duration > longest && (my_class() == $class[accordion thief] 
+		if(duration > longest && (my_class() == $class[Accordion Thief]
 			|| is_legal_accordion(it)))
 			longest = duration;
 	}
