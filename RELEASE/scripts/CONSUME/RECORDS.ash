@@ -145,7 +145,7 @@ DietAction to_action(Consumable c, Diet d)
 	// figure out the tool
 	if(c.useForkMug)
 		da.tool = c.get_fork_mug();
-	if(c.useSporkIfPossible && d.counts[$item[fudge spork]] == 0)
+	if(c.useSporkIfPossible && d.within_limit($item[fudge spork]))
 		da.tool = $item[fudge spork];
 	if(c.bestMayo != $item[none])
 		da.mayo = c.bestMayo;
