@@ -146,5 +146,9 @@ it completely clear how to find out your valueOfAdventure on your own!
 
 I'm writing this script for my own sake, but my clannies at Reddit United have been very supportive!
 
-Especially Rag Nymph (#2662313), JorGen Van Doe (#3069483), aurumbos (#2343846), and Lyft (#3045223)
+Especially Rag Nymph (#2662313),
+JorGen Van Doe (#3069483),
+aurumbos (#2343846),
+Lyft (#3045223),
+and LordHaplo (#3165152),
 all of whom have made my time all the more worthwhile with their kind donations!
