@@ -969,7 +969,11 @@ void append_diet_action(buffer b, DietAction da, int amount, Diet d)
 	else if(da.organ == ORGAN_CHECKPOINT)
 		b.append("checkpoint; ");
 	else if(da.organ == ORGAN_RESTORE)
-		b.append("outfit checkpoint; ");
+	{
+		b.append("familiar ");
+		b.append(my_familiar().to_string());
+		b.append("; outfit checkpoint; ");
+	}
 	//else
 		//print("BAD OCCURED", "red");
 }

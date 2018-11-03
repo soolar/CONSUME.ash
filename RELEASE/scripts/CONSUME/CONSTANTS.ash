@@ -7,7 +7,7 @@ int ORGAN_EQUIP = 5;
 int ORGAN_STOOPER = 6; // familiar stooper
 int ORGAN_MAXIMIZE_FOR_FORK_MUG = 7; // maximize hp,10cold res,10hot res
 int ORGAN_CHECKPOINT = 8; // checkpoint
-int ORGAN_RESTORE = 9; // outfit checkpoint
+int ORGAN_RESTORE = 9; // familiar currfam; outfit checkpoint
 
 int MAX_MEAT = 999999999999;
 
