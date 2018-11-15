@@ -754,7 +754,8 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 		handle_special_items(d, space, max);
 	}
 
-	while(space.fullness > 0 || space.inebriety > 0 || space.spleen > 0)
+	while(space.fullness > 0 || (space.inebriety > 0 ||
+		(nightcap && space.inebriety >= 0)) || space.spleen > 0)
 	{
 		if(space.spleen > 0)
 		{
