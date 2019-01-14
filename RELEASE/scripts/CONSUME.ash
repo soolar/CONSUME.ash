@@ -938,6 +938,8 @@ void append_diet_action(buffer b, DietAction da, int amount, Diet d)
 {
 	if(da.mayo != $item[none] && da.mayo != d.lastMayo)
 	{
+		if(item_amount($item[Mayo Minder&trade;]) == 0)
+			b.append("acquire Mayo Minder; ");
 		b.append("mayominder ");
 		b.append(da.mayo);
 		b.append("; ");
