@@ -736,6 +736,7 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 	evaluate_consumables_if_needed();
 
 	Diet d;
+	d.nightcap = nightcap;
 
 	d.handle_organ_expanders(space, max, nightcap);
 
@@ -913,12 +914,12 @@ Diet get_diet(int stom, int liv, int sple, boolean nightcap)
 		nightcap);
 }
 
-void append_item(buffer b, item it, int organ, int amount)
+void append_item(buffer b, item it, int organ, int amount, boolean nightcap)
 {
 	switch(organ)
 	{
 		case ORGAN_STOMACHE: b.append("eat "); break;
-		case ORGAN_LIVER: b.append("drink "); break;
+		case ORGAN_LIVER: b.append(nightcap ? "drinksilent " : "drink "); break;
 		case ORGAN_SPLEEN: b.append("chew "); break; // maybe someday?
 		case ORGAN_NONE: b.append("use "); break;
 		case ORGAN_EQUIP: b.append("equip "); break;
@@ -943,10 +944,10 @@ void append_diet_action(buffer b, DietAction da, int amount, Diet d)
 		d.lastMayo = da.mayo;
 	}
 	if(da.tool != $item[none])
-		b.append_item(da.tool, da.organ, amount);
+		b.append_item(da.tool, da.organ, amount, d.nightcap);
 
 	if(da.it != $item[none])
-		b.append_item(da.it, da.organ, amount);
+		b.append_item(da.it, da.organ, amount, d.nightcap);
 	else if(da.sk == $skill[Sweet Synthesis])
 	{
 		for(int i = 0; i < amount; ++i)

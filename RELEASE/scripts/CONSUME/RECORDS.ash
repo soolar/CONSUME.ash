@@ -124,6 +124,7 @@ record Diet
 	DietAction [int] actions;
 	int [item] counts;
 	item lastMayo;
+	boolean nightcap;
 };
 
 boolean within_limit(Diet d, item it)
