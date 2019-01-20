@@ -44,9 +44,7 @@ is what you would want to do if you are farming barf mountain and have the songb
 * Milk of Magnesium
 * The Ode to Booze
 * Mime army shotglass
-* All chocolates other than LOV Extraterrestrial Chocolate (for now). Note that fancy chocolate
-sculpture support isn't handled nicely if you run multiple times in one day because there is no
-mafia preference to track its use (that I could find, at least)
+* All chocolates other than LOV Extraterrestrial Chocolate (for now).
 * Organ cleaning consumables (hobopolis/batfellow consumables)
 * Considers cost of ingredients to make an item
 * Essential tofu

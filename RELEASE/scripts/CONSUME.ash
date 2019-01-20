@@ -685,7 +685,7 @@ void handle_chocolates(Diet d)
 		}
 	}
 	// own loop for diet appearance, no chocolate preference for this one??
-	for(int artAdvs = 5; artAdvs > 0; artAdvs -= 2)
+	for(int artAdvs = 5 - 2 * get_property("_chocolateSculpturesUsed").to_int(); artAdvs > 0; artAdvs -= 2)
 	{
 		int artPrice = $item[fancy chocolate sculpture].item_price();
 		int artVal = artAdvs * ADV_VALUE - artPrice;
