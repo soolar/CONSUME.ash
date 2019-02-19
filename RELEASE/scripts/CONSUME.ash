@@ -590,16 +590,19 @@ void handle_organ_cleanings(Diet d, Consumable c, OrganSpace space, OrganSpace m
 				if(space.spleen + oc.space > max.spleen)
 					fill_spleen(d, space, max);
 				space.spleen += oc.space;
+				space.spleen = min(space.spleen, max.spleen);
 				break;
 			case ORGAN_STOMACHE:
 				if(space.fullness + oc.space > max.fullness)
 					fill_stomache(d, space, max);
 				space.fullness += oc.space;
+				space.fullness = min(space.fullness, max.fullness);
 				break;
 			case ORGAN_LIVER:
 				if(space.inebriety + oc.space > max.inebriety)
 					fill_liver(d, space, max);
 				space.inebriety += oc.space;
+				space.inebriety = min(space.inebriety, max.inebriety);
 				break;
 		}
 	}
