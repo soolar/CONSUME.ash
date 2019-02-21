@@ -345,3 +345,19 @@ item get_class_chocolate(class c)
 		default: return $item[none];
 	}
 }
+
+boolean is_bloody(item it)
+{
+	return $items[
+		bloodstick,
+		actual blood sausage,
+		blood snowcone,
+		blood roll-up,
+		blood-soaked sponge cake,
+		bottle of Sanguiovese,
+		mulled blood,
+		Red Russian,
+		dusty bottle of blood,
+		vampagne,
+	] contains it;
+}

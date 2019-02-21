@@ -201,6 +201,9 @@ void evaluate_consumables()
 		if(it.tradeable.to_boolean() == false || it == $item[Jeppson's Malort])
 			continue;
 
+		if(it.is_bloody())
+			continue;
+
 		if(it.chocolate)
 		{
 			lookups[it] = true;
