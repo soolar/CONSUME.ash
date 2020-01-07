@@ -845,19 +845,16 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 
 	// prepend milk and ode
 	OrganSpace spaceTaken = d.total_space();
-	int milkTurns = have_effect($effect[got milk]);
-	while(milkTurns < spaceTaken.fullness)
+	if(spaceTaken.fullness > 0 && !get_property("_milkOfMagnesiumUsed").to_boolean())
 	{
-		int milkDuration = numeric_modifier($item[milk of magnesium], "effect duration");
-		float milkValue = ADV_VALUE * min(milkDuration, spaceTaken.fullness - milkTurns) -
-			item_price($item[milk of magnesium]);
-		if(milkValue <= 0)
-			break;
-		milkTurns += milkDuration;
-		DietAction milk;
-		milk.it = $item[milk of magnesium];
-		milk.organ = ORGAN_NONE;
-		d.insert_action(milk, 0);
+		float milkValue = ADV_VALUE * 5 - item_price($item[milk of magnesium]);
+		if(milkValue > 0)
+		{
+			DietAction milk;
+			milk.it = $item[milk of magnesium];
+			milk.organ = ORGAN_NONE;
+			d.insert_action(milk, 0);
+		}
 	}
 	if(have_skill($skill[The Ode to Booze]) && songDuration > 0)
 	{
