@@ -204,6 +204,9 @@ void evaluate_consumables()
 		if(it.is_bloody())
 			continue;
 
+		if(it.levelreq > my_level())
+			continue;
+
 		if(it.chocolate)
 		{
 			lookups[it] = true;
