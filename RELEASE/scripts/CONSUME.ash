@@ -51,10 +51,10 @@ Range get_adventures(DietAction da)
 
 	switch(da.tool)
 	{
-		case $item[Ol' Scratch's salad fork]:
+		case $item[Ol\' Scratch\'s salad fork]:
 			advs.multiply_round_up(da.it.is_salad() ? 1.5 : 1.3);
 			break;
-		case $item[Frosty's frosty mug]:
+		case $item[Frosty\'s frosty mug]:
 			advs.multiply_round_up(da.it.is_beer() ? 1.5 : 1.3);
 			break;
 		case $item[fudge spork]:
@@ -128,7 +128,7 @@ void evaluate_consumable(Consumable c)
 	item forkMug = c.get_fork_mug();
 	if(forkMug != $item[none])
 	{
-		boolean forkMugBonus = (forkMug == $item[ol' scratch's salad fork]) ?
+		boolean forkMugBonus = (forkMug == $item[ol\' scratch\'s salad fork]) ?
 			c.it.is_salad() : c.it.is_beer();
 		float forkMugMult = forkMugBonus ? 0.5 : 0.3;
 		Range forkMugAdvs = c.it.get_adventures();
@@ -198,7 +198,7 @@ void evaluate_consumables()
 		lookups[it] = true;
 	foreach it in $items[]
 	{
-		if(it.tradeable.to_boolean() == false || it == $item[Jeppson's Malort])
+		if(it.tradeable.to_boolean() == false || it == $item[Jeppson\'s Malort])
 			continue;
 
 		if(it.is_bloody())
