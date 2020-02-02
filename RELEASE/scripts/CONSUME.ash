@@ -1076,6 +1076,7 @@ void main(string command)
 			case "ORGANS":
 				if(i + 3 < commands.count())
 				{
+					simulate = false;
 					fullness = commands[i + 1].to_int();
 					inebriety = commands[i + 2].to_int();
 					spleen = commands[i + 3].to_int();
