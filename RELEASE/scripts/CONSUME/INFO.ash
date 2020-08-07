@@ -1,227 +1,31 @@
 boolean is_salad(item it)
 {
-	boolean [item] saladList = $items[
-		Crimbo salad,
-		Delicious salad,
-		Delicious star salad,
-		Kudzu salad,
-		Nutty organic salad,
-		Primitive alien salad,
-		Super salad,
-		Tofu wonton,
-	];
-	return saladList contains it;
+	return it.notes.contains_text("SALAD");
 }
 
 boolean is_beer(item it)
 {
-	boolean [item] beerList = $items[
-		Alewife&trade; Ale,
-		Amnesiac Ale,
-		antique beer,
-		Bark rootbeer,
-		Beertini,
-		Blood Light,
-		Bloody beer,
-		Bottle of Fishhead 900-Day IPA,
-		Bottle of Greedy Dog,
-		Bottle of Lambada Lambic,
-		Bottle of Old Pugilist,
-		Bottle of Professor Beer,
-		Bottle of Race Car Red,
-		Bottle of Rapier Witbier,
-		Breaded beer,
-		can of Br&uuml;talbr&auml;u,
-		Can of Drooling Monk,
-		Can of Impetuous Scofflaw,
-		Can of Swiller,
-		Can of the cheapest beer,
-		Cheap Chinese beer,
-		Cinco Mayo Lager,
-		Cobb's Knob Wurstbrau,
-		Cold One,
-		Cream stout,
-		CSA cheerfulness ration,
-		Cup of primitive beer,
-		Day-old beer,
-		Ginger beer,
-		Green beer,
-		Highest Bitter,
-		Ice porter,
-		Ice stein,
-		Ice-cold fotie,
-		Ice-cold Sir Schlitz,
-		Ice-cold Willer,
-		Imp Ale,
-		Large tankard of ale,
-		McMillicancuddy's Special Lager,
-		Mt. Noob Pale Ale,
-		Overpriced &quot;imported&quot; beer,
-		Paint A Vulgar Pitcher,
-		Party beer bomb,
-		Pebblebr&auml;u,
-		Plain old beer,
-		Plastic cup of beer,
-		Pumpkin beer,
-		Ram's Face Lager,
-		Red ale,
-		Saison du Lune,
-		Silver Bullet beer,
-		Tankard of ale,
-		Thriller Ice,
-		TRIO cup of beer,
-	];
-	return beerList contains it;
+	return it.notes.contains_text("BEER");
 }
 
 boolean is_wine(item it)
 {
-	boolean [item] wineList = $items[
-		Bartles and BRAAAINS wine cooler,
-		Beignet Milgranet,
-		Bilge wine,
-		Blackfly Chardonnay,
-		Blood-red mushroom wine,
-		Bordeaux Marteaux,
-		Bottle of cooking sherry,
-		Bottle of fruity &quot;wine&quot;,
-		Bottle of laundry sherry,
-		Bottle of Pinot Renoir,
-		Bottle of realpagne,
-		Bottle of sea wine,
-		Bottle of wine,
-		Boxed champagne,
-		Bucket of wine,
-		Buzzing mushroom wine,
-		Canteen of wine,
-		Carrot claret,
-		Centauri fish wine,
-		Complex mushroom wine,
-		Cool mushroom wine,
-		CRIMBCO wine,
-		Cruelty-free wine,
-		Dusty bottle of Marsala,
-		Dusty bottle of Merlot,
-		Dusty bottle of Muscat,
-		Dusty bottle of Pinot Noir,
-		Dusty bottle of Port,
-		Dusty bottle of Zinfandel,
-		Expensive champagne,
-		Flaming mushroom wine,
-		Flask of port,
-		Flat mushroom wine,
-		Flute of flat champagne,
-		Fromage Pinotage,
-		Gingerbread wine,
-		Gloomy mushroom wine,
-		High-end ginger wine,
-		Icy mushroom wine,
-		Knob mushroom wine,
-		Knoll mushroom wine,
-		Lumineux Limnio,
-		Magnum of fancy champagne,
-		Mid-level medieval mead,
-		Missing wine,
-		Morto Moreto,
-		Mulled berry wine,
-		Muschat,
-		Oily mushroom wine,
-		Overpowering mushroom wine,
-		Plum wine,
-		Pointy mushroom wine,
-		Psychotic Train wine,
-		Red red wine,
-		Sacramento wine,
-		Smooth mushroom wine,
-		Space port,
-		Spooky mushroom wine,
-		Stinky mushroom wine,
-		Supernova Champagne,
-		Swirling mushroom wine,
-		Temps Tempranillo,
-		Thistle wine,
-		Warbear bearserker mead,
-		Warbear blizzard mead,
-		Warbear feasting mead,
-		White wine,
-		Ye Olde Meade,
-	];
-	return wineList contains it;
+	return it.notes.contains_text("WINE");
 }
 
 boolean is_martini(item it)
 {
-	boolean [item] martiniList = $items[
-		barrel-aged martini,
-		basic martini,
-		beertini,
-		chocotini,
-		corpsetini,
-		dirty martini,
-		dry martini,
-		dry vodka martini,
-		gibson,
-		grogtini,
-		hacked gibson,
-		haunted martini,
-		herringtini,
-		humanitini,
-		improved martini,
-		low tide martini,
-		martini,
-		mini-martini,
-		more humanitini than humanitini,
-		moreltini,
-		nothingtini,
-		oh\, the humanitini,
-		piscatini,
-		rockin' wagon,
-		shroomtini,
-		soft green echo eyedrop antidote martini,
-		splendid martini,
-		vodka gibson,
-		vodka martini,
-	];
-	return martiniList contains it;
+	return it.notes.contains_text("MARTINI");
 }
 
 boolean is_saucy(item it)
 {
-	boolean [item] saucyList = $items[
-		cold hi mein,
-		devil hair pasta,
-		Fettris,
-		fettucini Inconnu,
-		fleetwood mac 'n' cheese,
-		fusillocybin,
-		gnocchetti di Nietzsche,
-		haunted Hell ramen,
-		Hell ramen,
-		hot hi mein,
-		libertagliatelle,
-		linguini immondizia bianco,
-		linguini of the sea,
-		prescription noodles,
-		shells a la shellfish,
-		sleazy hi mein,
-		spagecialetti,
-		spaghetti con calaveras,
-		spaghetti with Skullheads,
-		spooky hi mein,
-		stinky hi mein,
-		turkish mostaccioli,
-	];
-	return saucyList contains it;
+	return it.notes.contains_text("SAUCY");
 }
 
 boolean is_lasagna(item it)
 {
-	boolean [item] lasagnaList = $items[
-		gnat lasagna,
-		long pork lasagna,
-		fishy fish lasagna,
-	];
-	return lasagnaList contains it;
+	return it.notes.contains_text("LASAGNA");
 }
 
 boolean is_monday()
@@ -373,16 +177,5 @@ item get_class_chocolate(class c)
 
 boolean is_bloody(item it)
 {
-	return $items[
-		bloodstick,
-		actual blood sausage,
-		blood snowcone,
-		blood roll-up,
-		blood-soaked sponge cake,
-		bottle of Sanguiovese,
-		mulled blood,
-		Red Russian,
-		dusty bottle of blood,
-		vampagne,
-	] contains it;
+	return it.notes.contains_text("Vampyre");
 }

@@ -1,5 +1,6 @@
 script "Capitalistic Optimal Noms Script (Ultra Mega Edition)";
 notify "soolar the second";
+since r20283; // Consumable tagging
 
 import <CONSUME/INFO.ash>
 import <CONSUME/CONSTANTS.ash>
