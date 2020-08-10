@@ -250,7 +250,7 @@ void evaluate_consumables()
 			continue;
 
 		float advs_per_space = c.it.get_adventures().average() / c.space;
-		if((c.organ == ORGAN_STOMACHE && advs_per_space >= 4.5) || // 4.5 for food idk
+		if((c.organ == ORGAN_STOMACHE && advs_per_space >= 3.5) || // 3.5 for food idk
 			(c.organ == ORGAN_LIVER && advs_per_space >= 6) || // 6 for liver because elemental caipiroska
 			(c.organ == ORGAN_SPLEEN && advs_per_space > 0)) // anything for spleen
 		{
