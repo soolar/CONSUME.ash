@@ -7,6 +7,7 @@ import <CONSUME/CONSTANTS.ash>
 import <CONSUME/RECORDS.ash>
 import <CONSUME/HELPERS.ash>
 
+static boolean haveSearched = false;
 boolean useSeasoning = false;
 boolean use_seasoning() { return useSeasoning; } // for use in RECORDS.ash
 boolean havePinkyRing = available_amount($item[mafia pinky ring]) > 0;
@@ -254,7 +255,8 @@ void evaluate_consumables()
 			(c.organ == ORGAN_LIVER && advs_per_space >= 6) || // 6 for liver because elemental caipiroska
 			(c.organ == ORGAN_SPLEEN && advs_per_space > 0)) // anything for spleen
 		{
-			lookups[it] = true;
+			if(c.organ == ORGAN_SPLEEN)
+				lookups[it] = true;
 			if(care_about_ingredients(it))
 			{
 				foreach ingredient in get_ingredients(it)
@@ -269,8 +271,16 @@ void evaluate_consumables()
 			}
 		}
 	}
-	print("Looking up the price of " + lookups.count() + " items");
-	mall_prices(lookups);
+	if(!haveSearched)
+	{
+		print("Looking up the prices of food", "blue");
+		mall_prices("food");
+		print("Looking up the prices of booze", "blue");
+		mall_prices("booze");
+		print("Looking up the price of " + lookups.count() + " other items", "blue");
+		mall_prices(lookups);
+		haveSearched = true;
+	}
 
 	evaluate_special_items();
 
@@ -1106,6 +1116,9 @@ void main(string command)
 					return;
 				}
 				break;
+			case "REFRESH":
+				haveSearched = false;
+				break;
 			case "HELP":
 				print("CONSUME.ash Commands:", "blue");
 				print("ALL - Fill all organs, for real.");
@@ -1117,6 +1130,7 @@ void main(string command)
 					"may behave oddly.");
 				print("NOMEAT - Ignore CONSUME.BASEMEAT for this run.");
 				print("VALUE X - Treat valueOfAdventure as X for this run.");
+				print("REFRESH - Check mall prices for food and booze again this run.");
 				print("CONSUME.ash Settings:", "blue");
 				print('You can change these settings by typing "set SETTING=VALUE" in the gCLI.');
 				print("valueOfAdventure - Technically a mafia property, not a CONSUME property, " +
