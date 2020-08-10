@@ -16,6 +16,19 @@ Range get_adventures(item it)
 	return r;
 }
 
+int get_fites(item it)
+{
+	switch(it)
+	{
+		case $item[Meteorite-Ade]: return 5;
+		case $item[Jerks' Health&trade; Magazine]: return 1;
+	}
+	matcher fiteMatcher = create_matcher("\\+(\\d+) PvP fights?", it.notes);
+	if(fiteMatcher.find())
+		return fiteMatcher.group(1).to_int();
+	return 0;
+}
+
 item get_fork_mug(Consumable c)
 {
 	switch(c.organ)

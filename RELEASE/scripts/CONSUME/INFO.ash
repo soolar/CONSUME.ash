@@ -65,6 +65,10 @@ int daily_limit(item it)
 			return get_property("_sobrieTeaUsed").to_boolean() ? 0 : 1;
 		case $item[lupine appetite hormones]:
 			return get_property("_lupineHormonesUsed").to_boolean() ? 0 : 1;
+		case $item[Meteorite-Ade]:
+			return 3 - get_property("_meteoriteAdesUsed").to_int();
+		case $item[Jerks' Health&trade; Magazine]:
+			return 5 - get_property("_jerksHealthMagazinesUsed").to_int();
 		// batfellow consumables
 		case $item[Kudzu salad]:
 		case $item[Mansquito Serum]:

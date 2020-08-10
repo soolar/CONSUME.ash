@@ -75,7 +75,7 @@ Range get_adventures(DietAction da)
 float get_value(DietAction da)
 {
 	Range advs = da.get_adventures();
-	float value = advs.average() * ADV_VALUE;
+	float value = advs.average() * ADV_VALUE + da.it.get_fites() * PVP_VALUE;
 	if(da.it != $item[none])
 		value -= da.it.item_price();
 	if(da.tool != $item[none])
@@ -198,6 +198,14 @@ void evaluate_consumables()
 		lupine appetite hormones,
 	]
 		lookups[it] = true;
+	if(PVP_VALUE > 0)
+	{
+		foreach it in $items[
+			Meteorite-Ade,
+			Jerks' Health&trade; Magazine,
+		]
+			lookups[it] = true;
+	}
 	foreach it in $items[]
 	{
 		if(it.tradeable.to_boolean() == false || it == $item[Jeppson\'s Malort])
@@ -251,9 +259,11 @@ void evaluate_consumables()
 			continue;
 
 		float advs_per_space = c.it.get_adventures().average() / c.space;
+		float fites_per_space = c.it.get_fites().to_float() / c.space;
 		if((c.organ == ORGAN_STOMACHE && advs_per_space >= 3.5) || // 3.5 for food idk
 			(c.organ == ORGAN_LIVER && advs_per_space >= 6) || // 6 for liver because elemental caipiroska
-			(c.organ == ORGAN_SPLEEN && advs_per_space > 0)) // anything for spleen
+			(c.organ == ORGAN_SPLEEN && advs_per_space > 0) || // anything for spleen
+			(PVP_VALUE > 0 && fites_per_space > 0)) // there aren't many fitegen consumables, consider all
 		{
 			if(c.organ == ORGAN_SPLEEN)
 				lookups[it] = true;
@@ -593,6 +603,30 @@ void handle_special_items(Diet d, OrganSpace space, OrganSpace max)
 		{
 			while(d.within_limit($item[blue mana]))
 				d.add_action(castRecall);
+		}
+	}
+
+	if(d.within_limit($item[Meteorite-Ade]))
+	{
+		DietAction chugMeteoriteAde;
+		chugMeteoriteAde.it = $item[Meteorite-Ade];
+		chugMeteoriteAde.organ = ORGAN_NONE;
+		if(chugMeteoriteAde.get_value() > 0)
+		{
+			while(d.within_limit($item[Meteorite-Ade]))
+				d.add_action(chugMeteoriteAde);
+		}
+	}
+
+	if(d.within_limit($item[Jerks' Health&trade; Magazine]))
+	{
+		DietAction peruseJerkiness;
+		peruseJerkiness.it = $item[Jerks' Health&trade; Magazine];
+		peruseJerkiness.organ = ORGAN_NONE;
+		if(peruseJerkiness.get_value() > 0)
+		{
+			while(d.within_limit($item[Jerks' Health&trade; Magazine]))
+				d.add_action(peruseJerkiness);
 		}
 	}
 }
@@ -1116,6 +1150,19 @@ void main(string command)
 					return;
 				}
 				break;
+			case "VALUEPVP":
+				if(i + 1 < commands.count())
+				{
+					PVP_VALUE = commands[i + 1].to_int();
+					i += 1;
+				}
+				else
+				{
+					print("VALUEPVP requires an argument: The amount to treat CONSUME.PVPVAL " +
+						"as for this run.", "red");
+					return;
+				}
+				break;
 			case "REFRESH":
 				haveSearched = false;
 				break;
@@ -1130,6 +1177,7 @@ void main(string command)
 					"may behave oddly.");
 				print("NOMEAT - Ignore CONSUME.BASEMEAT for this run.");
 				print("VALUE X - Treat valueOfAdventure as X for this run.");
+				print("VALUEPVP X - Treat CONSUME.PVPVAL as X for this run.");
 				print("REFRESH - Check mall prices for food and booze again this run.");
 				print("CONSUME.ash Settings:", "blue");
 				print('You can change these settings by typing "set SETTING=VALUE" in the gCLI.');
@@ -1141,6 +1189,9 @@ void main(string command)
 				print("CONSUME.BASEMEAT - The base meat of the area you are meatfarmings. " +
 					"If you aren't meatfarming, leave this unset or set to 0. If you are farming " +
 					"Barf Mountain, this should be 250, or 275 if you own and use a Songboom.");
+				print("CONSUME.PVPVAL - Like valueOfAdventure, but for PvP fights. Leave unset or " +
+					"at 0 if you do not wish for your diet to consider fitegen consumables, or even " +
+					"give hybrid items like shot of kardashian gin favorable treatment.");
 				return;
 			default:
 				print('Unknown command "' + commands[i] + '"', "red");
