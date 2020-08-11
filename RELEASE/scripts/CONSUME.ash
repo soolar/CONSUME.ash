@@ -838,8 +838,15 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 		{
 			nightcap = false;
 			sort booze by -value.get_value(d);
-			d.add_action(booze[0].to_action(d));
-			d.handle_organ_cleanings(booze[0], space, max);
+			foreach i,b in booze
+			{
+				if(d.within_limit(b.it))
+				{
+					d.add_action(b.to_action(d));
+					d.handle_organ_cleanings(b, space, max);
+					break;
+				}
+			}
 			sort booze by -value.get_value(d) / value.space;
 		}
 	}
