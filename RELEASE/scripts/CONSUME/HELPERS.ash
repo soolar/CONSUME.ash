@@ -29,6 +29,14 @@ int get_fites(item it)
 	return 0;
 }
 
+int get_drippiness(item it)
+{
+	matcher dripMatcher = create_matcher("(\\d+) .g of Drippy Juice", it.notes);
+	if(dripMatcher.find())
+		return dripMatcher.group(1).to_int();
+	return 0;
+}
+
 item get_fork_mug(Consumable c)
 {
 	switch(c.organ)

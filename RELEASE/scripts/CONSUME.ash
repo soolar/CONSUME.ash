@@ -75,7 +75,7 @@ Range get_adventures(DietAction da)
 float get_value(DietAction da)
 {
 	Range advs = da.get_adventures();
-	float value = advs.average() * ADV_VALUE + da.it.get_fites() * PVP_VALUE;
+	float value = advs.average() * ADV_VALUE + da.it.get_fites() * PVP_VALUE + da.it.get_drippiness() * DRIP_VALUE;
 	if(da.it != $item[none])
 		value -= da.it.item_price();
 	if(da.tool != $item[none])
@@ -260,10 +260,12 @@ void evaluate_consumables()
 
 		float advs_per_space = c.it.get_adventures().average() / c.space;
 		float fites_per_space = c.it.get_fites().to_float() / c.space;
+		float drip_per_space = c.it.get_drippiness().to_float() / c.space;
 		if((c.organ == ORGAN_STOMACHE && advs_per_space >= 3.5) || // 3.5 for food idk
 			(c.organ == ORGAN_LIVER && advs_per_space >= 6) || // 6 for liver because elemental caipiroska
 			(c.organ == ORGAN_SPLEEN && advs_per_space > 0) || // anything for spleen
-			(PVP_VALUE > 0 && fites_per_space > 0)) // there aren't many fitegen consumables, consider all
+			(PVP_VALUE > 0 && fites_per_space > 0) || // there aren't many fitegen consumables, consider all
+			(DRIP_VALUE > 0 && drip_per_space > 0)) // same for drippy consumables
 		{
 			if(c.organ == ORGAN_SPLEEN)
 				lookups[it] = true;
@@ -1163,6 +1165,19 @@ void main(string command)
 					return;
 				}
 				break;
+			case "VALUEDRIP":
+				if(i + 1 < commands.count())
+				{
+					DRIP_VALUE = commands[i + 1].to_int();
+					i += 1;
+				}
+				else
+				{
+					print("VALUEDRIP requires an argument: The amount to treat CONSUME.DRIPVAL " +
+						"as for this run.", "red");
+					return;
+				}
+				break;
 			case "REFRESH":
 				haveSearched = false;
 				break;
@@ -1178,6 +1193,7 @@ void main(string command)
 				print("NOMEAT - Ignore CONSUME.BASEMEAT for this run.");
 				print("VALUE X - Treat valueOfAdventure as X for this run.");
 				print("VALUEPVP X - Treat CONSUME.PVPVAL as X for this run.");
+				print("VALUEDRIP X - Treat CONSUME.DRIPVAL as X for this run.");
 				print("REFRESH - Check mall prices for food and booze again this run.");
 				print("CONSUME.ash Settings:", "blue");
 				print('You can change these settings by typing "set SETTING=VALUE" in the gCLI.');
@@ -1192,6 +1208,13 @@ void main(string command)
 				print("CONSUME.PVPVAL - Like valueOfAdventure, but for PvP fights. Leave unset or " +
 					"at 0 if you do not wish for your diet to consider fitegen consumables, or even " +
 					"give hybrid items like shot of kardashian gin favorable treatment.");
+				print("CONSUME.DRIPVAL - Like valueOfAdventure, but for Drippy Juice provided by " +
+					"the consumable. Set this (possibly fairly high) if you want to load your gullet " +
+					"with drippy goodness so you can explore The Drip. Recommended however that you " +
+					"instead use the VALUEDRIP argument, so you don't forget you have it set and end " +
+					"up building up drippy juice in a brief aftercore stint that you don't want to " +
+					"drip in. Also note that if this is high enough to consider caviar, you will " +
+					"probably bump in to autoBuyPriceLimit.");
 				return;
 			default:
 				print('Unknown command "' + commands[i] + '"', "red");

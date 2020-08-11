@@ -69,6 +69,17 @@ int daily_limit(item it)
 			return 3 - get_property("_meteoriteAdesUsed").to_int();
 		case $item[Jerks' Health&trade; Magazine]:
 			return 5 - get_property("_jerksHealthMagazinesUsed").to_int();
+		// drippy consumables
+		case $item[drippy nugget]:
+			return get_property("_drippyNuggetUsed").to_boolean() ? 0 : 1;
+		case $item[glass of drippy wine]:
+			return get_property("_drippyWineUsed").to_boolean() ? 0 : 1;
+		case $item[drippy caviar]:
+			return get_property("_drippyCaviarUsed").to_boolean() ? 0 : 1;
+		case $item[drippy plum(?)]:
+			return get_property("_drippyPlumUsed").to_boolean() ? 0 : 1;
+		case $item[drippy pilsner]:
+			return get_property("_drippyPilsnerUsed").to_boolean() ? 0 : 1;
 		// batfellow consumables
 		case $item[Kudzu salad]:
 		case $item[Mansquito Serum]:

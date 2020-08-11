@@ -14,3 +14,4 @@ int MAX_MEAT = 999999999999;
 int ADV_VALUE = get_property("valueOfAdventure").to_int();
 int BASE_MEAT = get_property("CONSUME.BASEMEAT").to_int();
 int PVP_VALUE = get_property("CONSUME.PVPVAL").to_int();
+int DRIP_VALUE = get_property("CONSUME.DRIPVAL").to_int();
