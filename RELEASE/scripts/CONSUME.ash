@@ -286,9 +286,9 @@ void evaluate_consumables()
 	if(!haveSearched)
 	{
 		print("Looking up the prices of food", "blue");
-		mall_prices("food");
+		mall_prices("food", "awesome, EPIC");
 		print("Looking up the prices of booze", "blue");
-		mall_prices("booze");
+		mall_prices("booze", "awesome, EPIC");
 		print("Looking up the price of " + lookups.count() + " other items", "blue");
 		mall_prices(lookups);
 		haveSearched = true;
