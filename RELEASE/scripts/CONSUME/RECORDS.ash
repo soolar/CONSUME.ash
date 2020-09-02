@@ -300,6 +300,26 @@ Range total_adventures(Diet d)
 	return totalAdventures;
 }
 
+int get_fites(item it);
+
+int total_fites(Diet d)
+{
+	int res = 0;
+	foreach i,da in d.actions
+		res += da.it.get_fites();
+	return res;
+}
+
+int get_drippiness(item it);
+
+int total_drippiness(Diet d)
+{
+	int res = 0;
+	foreach i,da in d.actions
+		res += da.it.get_drippiness();
+	return res;
+}
+
 int total_organ_fillers(Diet d, int organ)
 {
 	int fillers = 0;

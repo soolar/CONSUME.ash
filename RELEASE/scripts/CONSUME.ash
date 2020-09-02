@@ -1083,6 +1083,12 @@ void print_diet(Diet d)
 	print("This should cost roughly " + cost.format() + " meat");
 	Range advs = d.total_adventures();
 	print("Adventure yield should be roughly " + advs.to_string());
+	int fites = d.total_fites();
+	if(fites > 0)
+		print("PvP Fight yield should be " + fites.to_string());
+	int drippiness = d.total_drippiness();
+	if(drippiness > 0)
+		print("Drippiness yield should be " + drippiness.to_string());
 	int profit = d.total_profit();
 	print("That's an average profit of " + profit.format());
 	profit += my_adventures() * ADV_VALUE;
