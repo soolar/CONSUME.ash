@@ -105,6 +105,7 @@ record DietAction
 	item tool; // fork/mug/spork
 	item mayo;
 	OrganCleaning [int] cleanings;
+	effect shrug;
 };
 
 boolean is_same(DietAction da1, DietAction da2)
@@ -113,7 +114,8 @@ boolean is_same(DietAction da1, DietAction da2)
 		da1.sk == da2.sk &&
 		da1.tool == da2.tool &&
 		da1.mayo == da2.mayo &&
-		da1.organ == da2.organ;
+		da1.organ == da2.organ &&
+		da1.shrug == da2.shrug;
 }
 
 //=============================================================================

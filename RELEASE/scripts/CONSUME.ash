@@ -964,6 +964,20 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 		d.add_action(restore);
 	}
 
+	boolean [effect] toShrug;
+	foreach _,da in d.actions
+	{
+		if(da.it.has_unwanted_text_effect())
+			toShrug[da.it.string_modifier("Effect").to_effect()] = true;
+	}
+	foreach shrug in toShrug
+	{
+		DietAction thisShrug;
+		thisShrug.organ = ORGAN_SHRUG;
+		thisShrug.shrug = shrug;
+		d.add_action(thisShrug);
+	}
+
 	return d;
 }
 
@@ -1037,6 +1051,12 @@ void append_diet_action(buffer b, DietAction da, int amount, Diet d)
 		b.append("familiar ");
 		b.append(my_familiar().to_string());
 		b.append("; outfit checkpoint; ");
+	}
+	else if(da.organ == ORGAN_SHRUG)
+	{
+		b.append("shrug ");
+		b.append(da.shrug.to_string());
+		b.append("; ");
 	}
 	//else
 		//print("BAD OCCURED", "red");

@@ -194,3 +194,16 @@ boolean is_bloody(item it)
 {
 	return it.notes.contains_text("Vampyre");
 }
+
+boolean is_unwanted_text_effect(effect ef)
+{
+	return $effects[
+		Just the Best Anapests,
+	] contains ef;
+}
+
+boolean has_unwanted_text_effect(item it)
+{
+	return it.string_modifier("Effect").to_effect().is_unwanted_text_effect();
+}
+
