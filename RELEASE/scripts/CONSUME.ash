@@ -777,7 +777,7 @@ void handle_organ_expanders(Diet d, OrganSpace space, OrganSpace max, boolean ni
 	d.handle_stomache_expander(space, max, $item[cuppa Voraci tea], 1);
 	d.handle_stomache_expander(space, max, $item[sweet tooth], 1);
 	d.handle_stomache_expander(space, max, $item[lupine appetite hormones], 3);
-	if(nightcap && my_familiar() != $familiar[stooper])
+	if(nightcap && have_familiar($familiar[stooper]) && my_familiar() != $familiar[stooper])
 	{
 		DietAction useStooper;
 		useStooper.organ = ORGAN_STOOPER;
