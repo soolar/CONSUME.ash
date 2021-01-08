@@ -1,6 +1,6 @@
 script "Capitalistic Optimal Noms Script (Ultra Mega Edition)";
 notify "soolar the second";
-since r20283; // Consumable tagging
+since r20606; // Universal Seasoning tracking
 
 import <CONSUME/INFO.ash>
 import <CONSUME/CONSTANTS.ash>
@@ -897,8 +897,18 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 		d.insert_action(maximizeForkMug, 0);
 	}
 
-	// prepend milk and ode
 	OrganSpace spaceTaken = d.total_space();
+
+	// prepend universal seasoning
+	if(spaceTaken.fullness > 0 && !get_property("_universalSeasoningUsed").to_boolean() && available_amount($item[Universal Seasoning]) > 0)
+	{
+		DietAction universalSeasoning;
+		universalSeasoning.it = $item[Universal Seasoning];
+		universalSeasoning.organ = ORGAN_NONE;
+		d.insert_action(universalSeasoning, 0);
+	}
+
+	// prepend milk and ode
 	if(spaceTaken.fullness > 0 && !get_property("_milkOfMagnesiumUsed").to_boolean())
 	{
 		float milkValue = ADV_VALUE * 5 - item_price($item[milk of magnesium]);
