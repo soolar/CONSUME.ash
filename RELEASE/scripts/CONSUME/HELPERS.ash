@@ -66,6 +66,10 @@ boolean care_about_ingredients(item it)
 
 int item_price(item it)
 {
+	// TODO: Find a better solution to this
+	if(it == $item[Universal Seasoning])
+		return 0;
+
 	int price = it.mall_price();
 	if(price < 100) // mall min is 100
 		price = npc_price(it);
