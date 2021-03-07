@@ -65,6 +65,11 @@ int daily_limit(item it)
 			return get_property("_sobrieTeaUsed").to_boolean() ? 0 : 1;
 		case $item[lupine appetite hormones]:
 			return get_property("_lupineHormonesUsed").to_boolean() ? 0 : 1;
+		case $item[distention pill]:
+			return (get_property("_distentionPillUsed").to_boolean() || available_amount($item[distention pill]) == 0) ? 0 : 1;
+		case $item[synthetic dog hair pill]:
+			return (get_property("_syntheticDogHairPillUsed").to_boolean() || available_amount($item[synthetic dog hair pill]) == 0) ? 0 : 1;
+		// pvp stuff
 		case $item[Meteorite-Ade]:
 			return 3 - get_property("_meteoriteAdesUsed").to_int();
 		case $item[Jerks' Health&trade; Magazine]:

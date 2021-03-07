@@ -66,7 +66,14 @@ boolean care_about_ingredients(item it)
 
 int item_price(item it)
 {
-	// TODO: Find a better solution to this
+	switch(it)
+	{
+		case $item[Universal Seasoning]:
+			return 0;
+		case $item[distention pill]:
+		case $item[synthetic dog hair pill]:
+			return 2 * ADV_VALUE + 0.5 * item_price($item[transporter transponder]);
+	}
 	if(it == $item[Universal Seasoning])
 		return 0;
 

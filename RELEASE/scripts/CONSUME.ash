@@ -586,6 +586,20 @@ void handle_special_items(Diet d, OrganSpace space, OrganSpace max)
 		}
 	}
 
+	if(d.within_limit($item[synthetic dog hair pill]))
+	{
+		float dogHairValue = liver_value(1) - $item[synthetic dog hair pill].item_price();
+		if(dogHairValue > 0)
+		{
+			Consumable dogHair;
+			dogHair.it = $item[synthetic dog hair pill];
+			dogHair.organ = ORGAN_NONE;
+			dogHair.cleanings[0] = new OrganCleaning(ORGAN_LIVER, 1);
+			d.handle_organ_cleanings(dogHair, space, max);
+			d.add_action(dogHair.to_action(d));
+		}
+	}
+
 	if(d.within_limit($item[essential tofu]))
 	{
 		DietAction useTofu;
@@ -776,6 +790,7 @@ void handle_organ_expanders(Diet d, OrganSpace space, OrganSpace max, boolean ni
 	d.handle_stomache_expander(space, max, $item[cuppa Voraci tea], 1);
 	d.handle_stomache_expander(space, max, $item[sweet tooth], 1);
 	d.handle_stomache_expander(space, max, $item[lupine appetite hormones], 3);
+	d.handle_stomache_expander(space, max, $item[distention pill], 1);
 	if(nightcap && have_familiar($familiar[stooper]) && my_familiar() != $familiar[stooper])
 	{
 		DietAction useStooper;
