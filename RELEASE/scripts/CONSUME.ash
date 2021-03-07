@@ -185,6 +185,7 @@ void evaluate_consumables()
 		ol' scratch's salad fork,
 		Special Seasoning,
 		mojo filter,
+		spice melange,
 		fudge spork,
 		essential tofu,
 		milk of magnesium,
@@ -198,6 +199,10 @@ void evaluate_consumables()
 		lupine appetite hormones,
 	]
 		lookups[it] = true;
+	if(have_skill($skill[Ancestral Recall]))
+	{
+		lookups[$item[blue mana]] =	true;
+	}
 	if(PVP_VALUE > 0)
 	{
 		foreach it in $items[
@@ -225,12 +230,6 @@ void evaluate_consumables()
 
 		if(BASE_MEAT > 0 && have_skill($skill[Sweet Synthesis]) && it.candy_type == "complex" &&
 			sweet_synthesis_pairing($effect[Synthesis: Greed], it).count() > 0)
-		{
-			lookups[it] = true;
-			continue;
-		}
-
-		if(it == $item[blue mana] && have_skill($skill[Ancestral Recall]))
 		{
 			lookups[it] = true;
 			continue;
