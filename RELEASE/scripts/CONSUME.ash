@@ -254,7 +254,7 @@ void evaluate_consumables()
 		if(c.space == 0)
 			continue;
 
-		if((it.is_bloody() != (my_class() == $class[Vampyre])) && c.organ != ORGAN_SPLEEN)
+		if((it.is_bloody() != (my_class() == $class[Vampyre])) && (c.organ == ORGAN_STOMACHE || c.organ == ORGAN_LIVER))
 			continue;
 
 		float advs_per_space = c.it.get_adventures().average() / c.space;
