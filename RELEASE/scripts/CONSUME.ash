@@ -84,7 +84,7 @@ float get_value(DietAction da)
 		value -= da.mayo.item_price();
 	if(da.organ == ORGAN_STOMACHE && useSeasoning)
 		value -= $item[Special Seasoning].item_price();
-	
+
 	if(da.sk == $skill[Sweet Synthesis])
 	{
 		item [int] greedCandies = sweet_synthesis_pair($effect[Synthesis: Greed]);
@@ -216,9 +216,6 @@ void evaluate_consumables()
 		if(it.tradeable.to_boolean() == false || it == $item[Jeppson\'s Malort])
 			continue;
 
-		if(it.is_bloody())
-			continue;
-
 		if(it.levelreq > my_level())
 			continue;
 
@@ -255,6 +252,9 @@ void evaluate_consumables()
 		}
 
 		if(c.space == 0)
+			continue;
+
+		if((it.is_bloody() != (my_class() == $class[Vampyre])) && c.organ != ORGAN_SPLEEN)
 			continue;
 
 		float advs_per_space = c.it.get_adventures().average() / c.space;
@@ -301,7 +301,7 @@ void evaluate_consumables()
 		evaluate_consumable(c);
 	foreach i,c in spleenies
 		evaluate_consumable(c);
-	
+
 	Diet d;
 	sort food by -value.get_value(d) / value.space;
 	sort booze by -value.get_value(d) / value.space;

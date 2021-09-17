@@ -39,6 +39,12 @@ int get_drippiness(item it)
 
 item get_fork_mug(Consumable c)
 {
+	// Vampyre can't easily sustain the damage from forks and mugs
+	if(my_class() == $class[Vampyre])
+	{
+		return $item[none];
+	}
+
 	switch(c.organ)
 	{
 		case ORGAN_STOMACHE: return $item[ol' scratch's salad fork];
