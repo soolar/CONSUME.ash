@@ -787,10 +787,17 @@ void handle_stomache_expander(Diet d, OrganSpace space, OrganSpace max, item exp
 
 void handle_organ_expanders(Diet d, OrganSpace space, OrganSpace max, boolean nightcap)
 {
+	// Vampyre can use organ expanders, but they don't actually do anything but waste money
+	if(my_class() == $class[Vampyre])
+	{
+		return;
+	}
+
 	d.handle_stomache_expander(space, max, $item[cuppa Voraci tea], 1);
 	d.handle_stomache_expander(space, max, $item[sweet tooth], 1);
 	d.handle_stomache_expander(space, max, $item[lupine appetite hormones], 3);
 	d.handle_stomache_expander(space, max, $item[distention pill], 1);
+
 	if(nightcap && have_familiar($familiar[stooper]) && my_familiar() != $familiar[stooper])
 	{
 		DietAction useStooper;
