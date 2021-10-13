@@ -1299,6 +1299,11 @@ void main(string command)
 	{
 		buffer b;
 		b.append_diet(d);
+		string userForbidden = get_property("forbiddenStores");
+		if (!userForbidden.contains_text("3408540")) {
+			set_property("forbiddenStores", userForbidden + ",3408540"); // forbid Dance Police
+		}
 		cli_execute(b.to_string());
+		set_property("forbiddenStores", userForbidden);
 	}
 }
