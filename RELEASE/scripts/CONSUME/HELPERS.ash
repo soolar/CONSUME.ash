@@ -80,8 +80,6 @@ int item_price(item it)
 		case $item[synthetic dog hair pill]:
 			return 2 * ADV_VALUE + 0.5 * item_price($item[transporter transponder]);
 	}
-	if(it == $item[Universal Seasoning])
-		return 0;
 
 	int price = it.mall_price();
 	if(price < 100) // mall min is 100
@@ -131,4 +129,22 @@ item get_cheapest(boolean [item] items)
 		}
 	}
 	return cheapest;
+}
+
+int get_tool_organ(item tool)
+{
+	switch(tool)
+	{
+		case $item[special seasoning]:
+			return ORGAN_AUTOMATIC;
+		case $item[fudge spork]:
+		case $item[Ol' Scratch's salad fork]:
+			return ORGAN_STOMACHE;
+		case $item[Frosty's frosty mug]:
+			return ORGAN_LIVER;
+		case $item[Universal Seasoning]:
+			return ORGAN_NONE;
+		default:
+			return ORGAN_ERROR;
+	}
 }

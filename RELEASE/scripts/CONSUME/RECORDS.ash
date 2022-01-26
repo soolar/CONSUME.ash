@@ -81,6 +81,7 @@ record Consumable
 	OrganCleaning [int] cleanings;
 	boolean useSporkIfPossible;
 	item bestMayo;
+	boolean useSeasoning;
 };
 
 boolean is_nothing(Consumable c)
@@ -102,7 +103,7 @@ record DietAction
 	skill sk;
 	int organ;
 	int space;
-	item tool; // fork/mug/spork
+	item [int] tools; // fork/mug/spork/seasoning
 	item mayo;
 	OrganCleaning [int] cleanings;
 	effect shrug;
@@ -110,12 +111,33 @@ record DietAction
 
 boolean is_same(DietAction da1, DietAction da2)
 {
-	return da1.it == da2.it &&
-		da1.sk == da2.sk &&
-		da1.tool == da2.tool &&
-		da1.mayo == da2.mayo &&
-		da1.organ == da2.organ &&
-		da1.shrug == da2.shrug;
+	if((da1.it != da2.it ||
+		da1.sk != da2.sk ||
+		da1.tools.count() != da2.tools.count() ||
+		da1.mayo != da2.mayo ||
+		da1.organ != da2.organ ||
+		da1.shrug != da2.shrug))
+	{
+		return false;
+	}
+
+	for(int i = 0; i < da1.tools.count(); ++i)
+	{
+		if(da1.tools[i] != da2.tools[i])
+			return false;
+	}
+
+	return true;
+}
+
+boolean has_spork(DietAction da)
+{
+	foreach i,tool in da.tools
+	{
+		if(tool == $item[fudge spork])
+			return true;
+	}
+	return false;
 }
 
 //=============================================================================
@@ -135,7 +157,6 @@ boolean within_limit(Diet d, item it)
 }
 
 item get_fork_mug(Consumable c);
-boolean use_seasoning();
 
 DietAction to_action(Consumable c, Diet d)
 {
@@ -145,11 +166,16 @@ DietAction to_action(Consumable c, Diet d)
 	da.organ = c.organ;
 	da.space = c.space;
 	da.cleanings = c.cleanings;
-	// figure out the tool
+	// figure out the tool(s)
+	if(c.useSeasoning)
+		da.tools[da.tools.count()] = $item[special seasoning];
 	if(c.useForkMug)
-		da.tool = c.get_fork_mug();
+		da.tools[da.tools.count()] = c.get_fork_mug();
 	if(c.useSporkIfPossible && d.within_limit($item[fudge spork]))
-		da.tool = $item[fudge spork];
+		da.tools[da.tools.count()] = $item[fudge spork];
+	if(c.organ == ORGAN_STOMACHE && d.within_limit($item[Universal Seasoning]))
+		da.tools[da.tools.count()] = $item[Universal Seasoning];
+
 	if(c.bestMayo != $item[none])
 		da.mayo = c.bestMayo;
 
@@ -161,12 +187,12 @@ void change_counts(Diet d, DietAction da, int amount)
 	// it won't recommend equipment you don't already have
 	if(da.it != $item[none] && da.organ != ORGAN_EQUIP) 
 		d.counts[da.it] += amount;
-	if(da.tool != $item[none])
-		d.counts[da.tool] += amount;
+	foreach i, tool in da.tools
+	{
+		d.counts[tool] += amount;
+	}
 	if(da.mayo != $item[none])
 		d.counts[da.mayo] += amount;
-	if(da.organ == ORGAN_STOMACHE && use_seasoning())
-		d.counts[$item[Special Seasoning]] += amount;
 	if(da.sk == $skill[Sweet Synthesis])
 	{
 		item [int] greedCandies = sweet_synthesis_pair($effect[Synthesis: Greed]);
@@ -398,8 +424,11 @@ boolean has_fork_mug(Diet d)
 {
 	foreach i,da in d.actions
 	{
-		if($items[Ol' Scratch's salad fork, Frosty's frosty mug] contains da.tool)
-			return true;
+		foreach i,tool in da.tools
+		{
+			if($items[Ol' Scratch's salad fork, Frosty's frosty mug] contains tool)
+				return true;
+		}
 	}
 	return false;
 }

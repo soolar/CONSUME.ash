@@ -8,8 +8,6 @@ import <CONSUME/RECORDS.ash>
 import <CONSUME/HELPERS.ash>
 
 static boolean haveSearched = false;
-boolean useSeasoning = false;
-boolean use_seasoning() { return useSeasoning; } // for use in RECORDS.ash
 boolean havePinkyRing = available_amount($item[mafia pinky ring]) > 0;
 boolean haveTuxedoShirt = available_amount($item[tuxedo shirt]) > 0;
 int mojoFiltersUseable = daily_limit($item[mojo filter]);
@@ -31,8 +29,6 @@ Range get_adventures(DietAction da)
 	Range advs = da.it.get_adventures();
 	if(da.organ == ORGAN_STOMACHE)
 	{
-		if(useSeasoning)
-			advs.add(1);
 		if(da.mayo == $item[Mayoflex])
 			advs.add(1);
 		if(da.it.is_saucy() && have_skill($skill[Saucemaven]))
@@ -51,17 +47,25 @@ Range get_adventures(DietAction da)
 			advs.add(da.space);
 	}
 
-	switch(da.tool)
+	foreach i,tool in da.tools
 	{
-		case $item[Ol\' Scratch\'s salad fork]:
+		switch(tool)
+		{
+		case $item[Ol' Scratch's salad fork]:
 			advs.multiply_round_up(da.it.is_salad() ? 1.5 : 1.3);
 			break;
-		case $item[Frosty\'s frosty mug]:
+			case $item[Frosty's frosty mug]:
 			advs.multiply_round_up(da.it.is_beer() ? 1.5 : 1.3);
 			break;
 		case $item[fudge spork]:
 			advs.add(3);
 			break;
+		case $item[special seasoning]:
+			advs.min += 1;
+			if(advs.min >= advs.max)
+				advs.max += 1;
+			break;
+		}
 	}
 
 	if(da.sk == $skill[Ancestral Recall])
@@ -78,12 +82,12 @@ float get_value(DietAction da)
 	float value = advs.average() * ADV_VALUE + da.it.get_fites() * PVP_VALUE + da.it.get_drippiness() * DRIP_VALUE;
 	if(da.it != $item[none])
 		value -= da.it.item_price();
-	if(da.tool != $item[none])
-		value -= da.tool.item_price();
+	foreach i,tool in da.tools
+	{
+		value -= tool.item_price();
+	}
 	if(da.mayo != $item[none])
 		value -= da.mayo.item_price();
-	if(da.organ == ORGAN_STOMACHE && useSeasoning)
-		value -= $item[Special Seasoning].item_price();
 
 	if(da.sk == $skill[Sweet Synthesis])
 	{
@@ -117,14 +121,6 @@ float get_value(Consumable c, Diet d)
 	return da.get_value();
 }
 
-void evaluate_special_items()
-{
-	if($item[Special Seasoning].item_price() < ADV_VALUE)
-		useSeasoning = true;
-	else
-		useSeasoning = false;
-}
-
 void evaluate_consumable(Consumable c)
 {
 	item forkMug = c.get_fork_mug();
@@ -150,6 +146,14 @@ void evaluate_consumable(Consumable c)
 	{
 		if(item_price($item[Mayoflex]) < ADV_VALUE)
 			c.bestMayo = $item[Mayoflex];
+	}
+
+	if(c.organ == ORGAN_STOMACHE)
+	{
+		Range advs = c.it.get_adventures();
+		boolean smallRange = advs.max - advs.min <= 1;
+		if(item_price($item[special seasoning]) < (smallRange ? 1 : 0.5) * ADV_VALUE)
+			c.useSeasoning = true;
 	}
 
 	record OrganMatcher
@@ -293,8 +297,6 @@ void evaluate_consumables()
 		haveSearched = true;
 	}
 
-	evaluate_special_items();
-
 	foreach i,c in food
 		evaluate_consumable(c);
 	foreach i,c in booze
@@ -318,6 +320,8 @@ void evaluate_consumables()
 	{
 		for(int i = 0; i < 5; ++i)
 		{
+			if(i >= list.count())
+				return;
 			Consumable c = list[i];
 			buffer b;
 			b.append(i);
@@ -332,6 +336,8 @@ void evaluate_consumables()
 					default: b.append(" (useForkMug true but not food/booze...)"); break;
 				}
 			}
+			if(c.useSeasoning)
+				b.append(" (w/seasoning)");
 			b.append(" (");
 			b.append(c.get_value(d) / c.space);
 			b.append(")");
@@ -339,7 +345,7 @@ void evaluate_consumables()
 		}
 	}
 	/*
-	print("food" + (useSeasoning ? " (use Special Seasoning)" : ""));
+	print("food");
 	print_some(food);
 	print("booze");
 	print_some(booze);
@@ -468,7 +474,7 @@ void fill_stomache(Diet d, OrganSpace space, OrganSpace max)
 		space.fullness -= best.space;
 		DietAction da = best.to_action(d);
 		d.add_action(da);
-		if(da.tool == $item[fudge spork])
+		if(da.has_spork())
 			sort food by -value.get_value(d) / value.space;
 	}
 	if(space.fullness > 0)
@@ -920,15 +926,6 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 
 	OrganSpace spaceTaken = d.total_space();
 
-	// prepend universal seasoning
-	if(spaceTaken.fullness > 0 && !get_property("_universalSeasoningUsed").to_boolean() && available_amount($item[Universal Seasoning]) > 0)
-	{
-		DietAction universalSeasoning;
-		universalSeasoning.it = $item[Universal Seasoning];
-		universalSeasoning.organ = ORGAN_NONE;
-		d.insert_action(universalSeasoning, 0);
-	}
-
 	// prepend milk and ode
 	if(spaceTaken.fullness > 0 && !get_property("_milkOfMagnesiumUsed").to_boolean())
 	{
@@ -1028,6 +1025,7 @@ void append_item(buffer b, item it, int organ, int amount, boolean nightcap)
 		case ORGAN_SPLEEN: b.append("chew "); break; // maybe someday?
 		case ORGAN_NONE: b.append("use "); break;
 		case ORGAN_EQUIP: b.append("equip "); break;
+		case ORGAN_AUTOMATIC: return;
 		default: print("Umm... Something happened?", "red"); break;
 	}
 	if(amount != 1)
@@ -1050,8 +1048,8 @@ void append_diet_action(buffer b, DietAction da, int amount, Diet d)
 		b.append("; ");
 		d.lastMayo = da.mayo;
 	}
-	if(da.tool != $item[none])
-		b.append_item(da.tool, da.organ, amount, d.nightcap);
+	foreach i,tool in da.tools
+		b.append_item(tool, tool.get_tool_organ(), amount, d.nightcap);
 
 	if(da.it != $item[none])
 		b.append_item(da.it, da.organ, amount, d.nightcap);

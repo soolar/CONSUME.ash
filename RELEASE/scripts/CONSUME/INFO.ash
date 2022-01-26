@@ -96,6 +96,9 @@ int daily_limit(item it)
 		case $item[Mr. Burnsger]:
 		case $item[The Inquisitor's unidentifiable object]:
 			return 1;
+		// Universal Seasoning
+		case $item[Universal Seasoning]:
+			return item_amount($item[Universal Seasoning]) - get_property("_universalSeasoningsUsed").to_int();
 		// TODO: MOOOOOOOOOOOOOORE
 		default: return -1;
 	}

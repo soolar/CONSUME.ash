@@ -9,6 +9,8 @@ int ORGAN_MAXIMIZE_FOR_FORK_MUG = 7; // maximize hp,10cold res,10hot res
 int ORGAN_CHECKPOINT = 8; // checkpoint
 int ORGAN_RESTORE = 9; // familiar currfam; outfit checkpoint
 int ORGAN_SHRUG = 10;
+int ORGAN_AUTOMATIC = 11; // special seasoning and some others but they only impact substats so w/e
+int ORGAN_ERROR = 69420;
 
 int MAX_MEAT = 999999999999;
 
