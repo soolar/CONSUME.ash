@@ -1093,6 +1093,16 @@ void append_diet_action(buffer b, DietAction da, int amount, Diet d)
 
 void append_diet(buffer b, Diet d)
 {
+	// put away any special seasoning you have, except for any you're using
+	int seasoningToCloset = max(0, item_amount($item[special seasoning]) - d.counts[$item[special seasoning]]);
+	if(seasoningToCloset > 0)
+	{
+		b.append("closet put ");
+		b.append(seasoningToCloset);
+		b.append(" ");
+		b.append($item[special seasoning].to_string());
+		b.append("; ");
+	}
 	// get everything first, so that if something is too expensive your diet
 	// isn't interrupted in the middle, since that's a pain in the butt
 	foreach it,amount in d.counts
@@ -1120,6 +1130,14 @@ void append_diet(buffer b, Diet d)
 			count++;
 	}
 	b.append_diet_action(last, count, d);
+	// take the seasoning from earlier back out
+	if(seasoningToCloset > 0)
+	{
+		b.append("closet take ");
+		b.append(seasoningToCloset);
+		b.append(" ");
+		b.append($item[special seasoning].to_string());
+	}
 }
 
 void print_diet(Diet d)
