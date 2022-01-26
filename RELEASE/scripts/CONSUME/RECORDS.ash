@@ -432,3 +432,22 @@ boolean has_fork_mug(Diet d)
 	}
 	return false;
 }
+
+boolean has_unseasoned(Diet d)
+{
+	foreach i,da in d.actions
+	{
+		boolean isSeasoned = false;
+		foreach i,tool in da.tools
+		{
+			if(tool == $item[special seasoning])
+			{
+				isSeasoned = true;
+				break;
+			}
+		}
+		if(!isSeasoned)
+			return true;
+	}
+	return false;
+}

@@ -7,7 +7,7 @@ import <CONSUME/CONSTANTS.ash>
 import <CONSUME/RECORDS.ash>
 import <CONSUME/HELPERS.ash>
 
-static boolean haveSearched = false;
+static boolean haveSearched = true;
 boolean havePinkyRing = available_amount($item[mafia pinky ring]) > 0;
 boolean haveTuxedoShirt = available_amount($item[tuxedo shirt]) > 0;
 int mojoFiltersUseable = daily_limit($item[mojo filter]);
@@ -1016,7 +1016,7 @@ Diet get_diet(int stom, int liv, int sple, boolean nightcap)
 		nightcap);
 }
 
-void append_item(buffer b, item it, int organ, int amount, boolean nightcap)
+void append_item(buffer b, item it, int organ, int amount, boolean nightcap, boolean hasUnseasoned)
 {
 	switch(organ)
 	{
@@ -1025,7 +1025,14 @@ void append_item(buffer b, item it, int organ, int amount, boolean nightcap)
 		case ORGAN_SPLEEN: b.append("chew "); break; // maybe someday?
 		case ORGAN_NONE: b.append("use "); break;
 		case ORGAN_EQUIP: b.append("equip "); break;
-		case ORGAN_AUTOMATIC: return;
+		case ORGAN_AUTOMATIC:
+			if(hasUnseasoned)
+			{
+				b.append("closet take ");
+				break;
+			}
+			else
+				return;
 		default: print("Umm... Something happened?", "red"); break;
 	}
 	if(amount != 1)
@@ -1049,10 +1056,10 @@ void append_diet_action(buffer b, DietAction da, int amount, Diet d)
 		d.lastMayo = da.mayo;
 	}
 	foreach i,tool in da.tools
-		b.append_item(tool, tool.get_tool_organ(), amount, d.nightcap);
+		b.append_item(tool, tool.get_tool_organ(), amount, d.nightcap, d.has_unseasoned());
 
 	if(da.it != $item[none])
-		b.append_item(da.it, da.organ, amount, d.nightcap);
+		b.append_item(da.it, da.organ, amount, d.nightcap, d.has_unseasoned());
 	else if(da.sk == $skill[Sweet Synthesis])
 	{
 		for(int i = 0; i < amount; ++i)
@@ -1095,6 +1102,8 @@ void append_diet(buffer b, Diet d)
 {
 	// put away any special seasoning you have, except for any you're using
 	int seasoningToCloset = max(0, item_amount($item[special seasoning]) - d.counts[$item[special seasoning]]);
+	if(!d.has_unseasoned())
+		seasoningToCloset = 0;
 	if(seasoningToCloset > 0)
 	{
 		b.append("closet put ");
@@ -1114,6 +1123,16 @@ void append_diet(buffer b, Diet d)
 			b.append(" ");
 			b.append(it.to_string());
 			b.append("; ");
+
+			// closet the rest of the seasoning for now augh
+			if(it == $item[special seasoning] && d.has_unseasoned())
+			{
+				b.append("closet put ");
+				b.append(amount);
+				b.append(" ");
+				b.append(it.to_string());
+				b.append("; ");
+			}
 		}
 	}
 	DietAction last = d.actions[0];
@@ -1137,6 +1156,7 @@ void append_diet(buffer b, Diet d)
 		b.append(seasoningToCloset);
 		b.append(" ");
 		b.append($item[special seasoning].to_string());
+		b.append(";");
 	}
 }
 
