@@ -817,6 +817,12 @@ void handle_organ_expanders(Diet d, OrganSpace space, OrganSpace max, boolean ni
 Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 {
 	evaluate_consumables_if_needed();
+	
+	//Some foods and booze clear spleen, so this acts as a buffer
+	//If space.spleen is too low, we might waste those cleanses
+	//Also fixes a bug where spleen is filled up past the intended limit (test: CONSUME SIM ORGANS 10 10 0 NOMEAT)
+	int spleen_buffer = spleen_limit() - space.spleen;
+	if (spleen_buffer > 0) space.spleen = spleen_limit();
 
 	Diet d;
 	d.nightcap = nightcap;
@@ -852,6 +858,14 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 			fill_stomache(d, space, max);
 			if(space.fullness > 0)
 				break;
+		}
+		//Fill spleen again if stomache cleared spleen
+		//This ensures that if the booze also clears spleen, that wouldn't be wasted
+		if(space.spleen > 0) 
+		{
+			fill_spleen(d, space, max);
+			if(space.spleen > 0)
+			 break;
 		}
 		if(space.inebriety > 0)
 		{
@@ -949,6 +963,22 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 			d.insert_action(ode, 0);
 	}
 
+	// go through spleen actions from the end and remove usage of our spleen buffer
+	if (spleen_buffer > 0)
+	{
+		for(int i = d.actions.count() - 1; i >= 0; --i)
+		{
+			if(d.actions[i].organ == ORGAN_SPLEEN && d.actions[i].space <= spleen_buffer)
+			{
+				spleen_buffer -= d.actions[i].space;				
+				d.remove_action(i);
+			}
+			if (spleen_buffer <= 0) {
+				break;
+			}
+		}
+	}
+	
 	// go through your spleen actions from the end and replace with
 	// sweet synthesis as appropriate
 	if(have_skill($skill[Sweet Synthesis]) && BASE_MEAT > 0)
