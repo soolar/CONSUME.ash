@@ -968,14 +968,28 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 	{
 		for(int i = d.actions.count() - 1; i >= 0; --i)
 		{
-			if(d.actions[i].organ == ORGAN_SPLEEN && d.actions[i].space <= spleen_buffer)
+			if(d.actions[i].organ == ORGAN_SPLEEN)
 			{
-				spleen_buffer -= d.actions[i].space;				
-				d.remove_action(i);
-			}
-			if (spleen_buffer <= 0) {
-				break;
-			}
+				if (d.actions[i].space <= spleen_buffer) 
+				{
+					spleen_buffer -= d.actions[i].space;					
+					d.remove_action(i);
+				} 
+				else 
+				{
+					int spaceToFill = d.actions[i].space - spleen_buffer;					
+					spleen_buffer = 0;
+					d.remove_action(i);
+					while(spaceToFill > 0)
+					{
+						Consumable filler = d.best_spleen(spaceToFill);
+						spaceToFill -= filler.space;
+						d.insert_action(filler.to_action(d), i);
+						++i;
+					}
+				}
+			}						
+			if (spleen_buffer <= 0) break;			
 		}
 	}
 	
