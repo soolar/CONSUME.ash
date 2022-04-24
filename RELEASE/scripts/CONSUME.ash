@@ -960,7 +960,7 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 		float greedValue = synthesizeGreed.get_value();
 		for(int i = d.actions.count() - 1; i >= 0; --i)
 		{
-			if(d.total_synthesis_turns() >= my_adventures() + d.total_adventures().average())
+			if(d.total_synthesis_turns() + have_effect($effect[Synthesis: Greed]) >= my_adventures() + d.total_adventures().average())
 				break;
 
 			if(d.actions[i].organ == ORGAN_SPLEEN && d.actions[i].sk != $skill[Sweet Synthesis])

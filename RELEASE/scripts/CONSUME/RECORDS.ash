@@ -185,7 +185,7 @@ DietAction to_action(Consumable c, Diet d)
 void change_counts(Diet d, DietAction da, int amount)
 {
 	// it won't recommend equipment you don't already have
-	if(da.it != $item[none] && da.organ != ORGAN_EQUIP) 
+	if(da.it != $item[none] && da.organ != ORGAN_EQUIP)
 		d.counts[da.it] += amount;
 	foreach i, tool in da.tools
 	{
