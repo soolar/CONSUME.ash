@@ -66,6 +66,7 @@ boolean care_about_ingredients(item it)
 		spooky wad,
 		sleaze wad,
 		stench wad,
+		disassembled clover,
 	];
 	return !(dontCare contains it);
 }

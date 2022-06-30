@@ -264,8 +264,8 @@ void evaluate_consumables()
 		float advs_per_space = c.it.get_adventures().average() / c.space;
 		float fites_per_space = c.it.get_fites().to_float() / c.space;
 		float drip_per_space = c.it.get_drippiness().to_float() / c.space;
-		if((c.organ == ORGAN_STOMACHE && advs_per_space >= 3.5) || // 3.5 for food idk
-			(c.organ == ORGAN_LIVER && advs_per_space >= 6) || // 6 for liver because elemental caipiroska
+		if((c.organ == ORGAN_STOMACHE && advs_per_space > 0) || // down with food prejudice! If it's edible, it's good enough, maybe!
+			(c.organ == ORGAN_LIVER && advs_per_space > 0) || // down with booze prejudice too! Who knows if it's a good nightcap!
 			(c.organ == ORGAN_SPLEEN && advs_per_space > 0) || // anything for spleen
 			(PVP_VALUE > 0 && fites_per_space > 0) || // there aren't many fitegen consumables, consider all
 			(DRIP_VALUE > 0 && drip_per_space > 0)) // same for drippy consumables
@@ -289,9 +289,9 @@ void evaluate_consumables()
 	if(!haveSearched)
 	{
 		print("Looking up the prices of food", "blue");
-		mall_prices("food", "awesome, EPIC");
+		mall_prices("food", "crappy, decent, good, awesome, EPIC");
 		print("Looking up the prices of booze", "blue");
-		mall_prices("booze", "awesome, EPIC");
+		mall_prices("booze", "crappy, decent, good, awesome, EPIC");
 		print("Looking up the price of " + lookups.count() + " other items", "blue");
 		mall_prices(lookups);
 		haveSearched = true;
