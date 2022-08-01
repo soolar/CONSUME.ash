@@ -6,7 +6,7 @@ CONSUME.ash is a script that will handle your diet in Kingdom of Loathing for yo
 
 Run this command in the graphical CLI:
 <pre>
-svn checkout https://github.com/soolar/CONSUME.ash/trunk/RELEASE/
+git checkout https://github.com/soolar/CONSUME.ash.git
 </pre>
 Will require [a recent build of KoLMafia](http://builds.kolmafia.us/job/Kolmafia/lastSuccessfulBuild/).
 
