@@ -215,3 +215,23 @@ boolean has_unwanted_text_effect(item it)
 	return it.string_modifier("Effect").to_effect().is_unwanted_text_effect();
 }
 
+boolean can_acquire(item it)
+{
+	if ($items[baked veggie ricotta casserole,
+	plain calzone,
+	roasted vegetable focaccia,
+	ratatouille de Jarlsberg,
+	Jarlsberg's vegetable soup,
+	roasted vegetable of Jarlsberg,
+	St. Pete's sneaky smoothie,
+	Pete's wiley whey bar,
+	Pete's rich ricotta,
+	Boris's beer,
+	honey bun of Boris,
+	Boris's bread] contains it) {
+		// these are all untradable Cookbookbat consumables which can be crafted from tradeable ingredients
+		return true;
+	}
+	// for everything, just return use the tradeable record as before.
+	return it.tradeable.to_boolean();
+}
