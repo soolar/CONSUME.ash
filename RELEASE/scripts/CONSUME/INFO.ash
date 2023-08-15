@@ -99,6 +99,11 @@ int daily_limit(item it)
 		// Universal Seasoning
 		case $item[Universal Seasoning]:
 			return item_amount($item[Universal Seasoning]) - get_property("_universalSeasoningsUsed").to_int();
+		// Cookbookbat legendary consumables. These are once per ascension but we handle that in can_acquire() on subsequent days.
+		case $item[Calzone of Legend]:
+		case $item[Deep Dish of Legend]:
+		case $item[Pizza of Legend]:
+			return 1;
 		// TODO: MOOOOOOOOOOOOOORE
 		default: return -1;
 	}
@@ -215,3 +220,33 @@ boolean has_unwanted_text_effect(item it)
 	return it.string_modifier("Effect").to_effect().is_unwanted_text_effect();
 }
 
+boolean can_acquire(item it)
+{
+	if ($items[baked veggie ricotta casserole,
+	plain calzone,
+	roasted vegetable focaccia,
+	ratatouille de Jarlsberg,
+	Jarlsberg's vegetable soup,
+	roasted vegetable of Jarlsberg,
+	St. Pete's sneaky smoothie,
+	Pete's wiley whey bar,
+	Pete's rich ricotta,
+	Boris's beer,
+	honey bun of Boris,
+	Boris's bread] contains it) {
+		// these are all untradable Cookbookbat consumables which can be crafted from tradeable ingredients
+		return true;
+	}
+	// these are consumable once per ascension and are tracked in appropriate mafia properties.
+	if (it == $item[Calzone of Legend] && !get_property("calzoneOfLegendEaten").to_boolean()) {
+		return true;
+	}
+	if (it == $item[Deep Dish of Legend] && !get_property("deepDishOfLegendEaten").to_boolean()) {
+		return true;
+	}
+	if (it == $item[Pizza of Legend] && !get_property("pizzaOfLegendEaten").to_boolean()) {
+		return true;
+	}
+	// for everything, just return use the tradeable record as before.
+	return it.tradeable.to_boolean();
+}

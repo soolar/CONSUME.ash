@@ -217,7 +217,7 @@ void evaluate_consumables()
 	}
 	foreach it in $items[]
 	{
-		if(it.tradeable.to_boolean() == false || it == $item[Jeppson\'s Malort])
+		if(it.can_acquire() == false || it == $item[Jeppson\'s Malort])
 			continue;
 
 		if(it.levelreq > my_level())
