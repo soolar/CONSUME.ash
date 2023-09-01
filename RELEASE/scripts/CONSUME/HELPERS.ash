@@ -144,6 +144,7 @@ int get_tool_organ(item tool)
 		case $item[Frosty's frosty mug]:
 			return ORGAN_LIVER;
 		case $item[Universal Seasoning]:
+		case $item[whet stone]:
 			return ORGAN_NONE;
 		default:
 			return ORGAN_ERROR;

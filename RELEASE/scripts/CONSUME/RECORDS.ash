@@ -82,6 +82,7 @@ record Consumable
 	boolean useSporkIfPossible;
 	item bestMayo;
 	boolean useSeasoning;
+	boolean useWhetStone;
 };
 
 boolean is_nothing(Consumable c)
@@ -169,6 +170,8 @@ DietAction to_action(Consumable c, Diet d)
 	// figure out the tool(s)
 	if(c.useSeasoning)
 		da.tools[da.tools.count()] = $item[special seasoning];
+	if(c.useWhetStone)
+		da.tools[da.tools.count()] = $item[whet stone];
 	if(c.useForkMug)
 		da.tools[da.tools.count()] = c.get_fork_mug();
 	if(c.useSporkIfPossible && d.within_limit($item[fudge spork]))
