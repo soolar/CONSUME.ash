@@ -1,6 +1,6 @@
 script "Capitalistic Optimal Noms Script (Ultra Mega Edition)";
 notify "soolar the second";
-since r20606; // Universal Seasoning tracking
+since r27060; // rock garden items 
 
 import <CONSUME/INFO.ash>
 import <CONSUME/CONSTANTS.ash>
@@ -64,6 +64,9 @@ Range get_adventures(DietAction da)
 			advs.min += 1;
 			if(advs.min >= advs.max)
 				advs.max += 1;
+			break;
+		case $item[whet stone]:
+			advs.add(1);
 			break;
 		}
 	}
@@ -154,6 +157,8 @@ void evaluate_consumable(Consumable c)
 		boolean smallRange = advs.max - advs.min <= 1;
 		if(item_price($item[special seasoning]) < (smallRange ? 1 : 0.5) * ADV_VALUE)
 			c.useSeasoning = true;
+		if(item_price($item[whet stone]) < ADV_VALUE)
+			c.useWhetStone = true;
 	}
 
 	record OrganMatcher
@@ -188,6 +193,7 @@ void evaluate_consumables()
 		frosty's frosty mug,
 		ol' scratch's salad fork,
 		Special Seasoning,
+		whet stone,
 		mojo filter,
 		spice melange,
 		fudge spork,
@@ -338,6 +344,8 @@ void evaluate_consumables()
 			}
 			if(c.useSeasoning)
 				b.append(" (w/seasoning)");
+			if(c.useWhetStone)
+				b.append(" (w/whet stone)");
 			b.append(" (");
 			b.append(c.get_value(d) / c.space);
 			b.append(")");
