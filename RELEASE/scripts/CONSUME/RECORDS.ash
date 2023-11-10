@@ -132,16 +132,6 @@ boolean is_same(DietAction da1, DietAction da2)
 	return true;
 }
 
-boolean has_milk(DietAction da)
-{
-	foreach i,tool in da.tools
-	{
-		if(tool == $item[milk of magnesium])
-			return true;
-	}
-	return false;
-}
-
 boolean has_spork(DietAction da)
 {
 	foreach i,tool in da.tools
@@ -185,8 +175,6 @@ DietAction to_action(Consumable c, Diet d)
 		da.tools[da.tools.count()] = $item[whet stone];
 	if(c.useForkMug)
 		da.tools[da.tools.count()] = c.get_fork_mug();
-	if(c.useMilkIfPossible && d.within_limit($item[milk of magnesium]))
-		da.tools[da.tools.count()] = $item[milk of magnesium];
 	if(c.useSporkIfPossible && d.within_limit($item[fudge spork]))
 		da.tools[da.tools.count()] = $item[fudge spork];
 	if(c.organ == ORGAN_STOMACHE && d.within_limit($item[Universal Seasoning]))
