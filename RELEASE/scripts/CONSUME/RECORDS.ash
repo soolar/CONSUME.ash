@@ -79,7 +79,6 @@ record Consumable
 	int organ;
 	boolean useForkMug;
 	OrganCleaning [int] cleanings;
-	boolean useMilkIfPossible;
 	boolean useSporkIfPossible;
 	item bestMayo;
 	boolean useSeasoning;
