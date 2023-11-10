@@ -33,9 +33,10 @@ Range get_adventures(DietAction da)
 			advs.add(1);
 		if(da.it.is_saucy() && have_skill($skill[Saucemaven]))
 			advs.add($classes[Pastamancer, Sauceror] contains my_class() ? 5 : 3);
+		if(da.it.is_pizza() && have_skill($skill[Pizza Lover]))
+			advs.add(da.space); // Pizza Lover adds +1 adventure per size of pizzas.
 		if(da.it.is_lasagna() && !is_monday())
 			advs.add(5); // account for potion of the field gar
-		advs.add(da.space); // account for milk
 	}
 	else if(da.organ == ORGAN_LIVER)
 	{
@@ -56,6 +57,9 @@ Range get_adventures(DietAction da)
 			break;
 			case $item[Frosty's frosty mug]:
 			advs.multiply_round_up(da.it.is_beer() ? 1.5 : 1.3);
+			break;
+		case $item[milk of magnesium]:
+			advs.add(5);
 			break;
 		case $item[fudge spork]:
 			advs.add(3);
@@ -137,6 +141,9 @@ void evaluate_consumable(Consumable c)
 		float forkMugValue = forkMugAdvs.average() * ADV_VALUE - forkMug.item_price();
 		if(c.organ == ORGAN_STOMACHE)
 		{
+			float milkValue = 5 * ADV_VALUE - $item[milk of magnesium].item_price();
+			if(milkValue > 0)
+				c.useMilkIfPossible = true;
 			float sporkValue = 3 * ADV_VALUE - $item[fudge spork].item_price();
 			if(sporkValue > 0 && sporkValue > forkMugValue)
 				c.useSporkIfPossible = true;
@@ -196,6 +203,7 @@ void evaluate_consumables()
 		whet stone,
 		mojo filter,
 		spice melange,
+		milk of magnesium,
 		fudge spork,
 		essential tofu,
 		milk of magnesium,
