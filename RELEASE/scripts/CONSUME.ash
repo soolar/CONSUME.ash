@@ -1034,7 +1034,6 @@ void append_item(buffer b, item it, int organ, int amount, boolean nightcap, boo
 		case ORGAN_SPLEEN: b.append("chew "); break; // maybe someday?
 		case ORGAN_NONE: b.append("use "); break;
 		case ORGAN_EQUIP: b.append("equip "); break;
-		case ORGAN_BRAIN: b.append("cast "); break;
 		case ORGAN_AUTOMATIC:
 			if(hasUnseasoned)
 			{
