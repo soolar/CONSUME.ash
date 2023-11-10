@@ -28,6 +28,11 @@ boolean is_lasagna(item it)
 	return it.notes.contains_text("LASAGNA");
 }
 
+boolean is_pizza(item it)
+{
+	return it.notes.contains_text("PIZZA");
+}
+
 boolean is_monday()
 {
 	return numeric_modifier($item[tuesday's ruby], "muscle percent") == 5.0;
