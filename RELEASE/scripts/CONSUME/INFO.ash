@@ -109,6 +109,21 @@ int daily_limit(item it)
 	}
 }
 
+int daily_limit(skill sk)
+{
+	switch(sk)
+	{
+		case $skill[Sweat Out Some Booze]:
+			// need 25 sweat per cast, max 3 casts per day.
+			return min(get_property("sweat").to_int()/25, 3 - get_property("_sweatOutSomeBoozeUsed").to_int());
+		case $skill[Aug. 16th: Roller Coaster Day!]:
+			// scepter skills can only be cast once a day but the skill of the day doesn't count towards our 5 uses per day.
+			return (get_property("_aug16Cast").to_boolean() || (get_property("_augSkillsCast").to_int() >= 5 && to_skill(7451 + format_date_time("yyyyMMdd", today_to_string(), "dd").to_int()) != sk)) ? 0 : 1;
+		default:
+			return -1;
+	}
+}
+
 int accordion_buff_duration(item accordion)
 {
 	switch(accordion)

@@ -148,6 +148,7 @@ record Diet
 {
 	DietAction [int] actions;
 	int [item] counts;
+	int [skill] casts;
 	item lastMayo;
 	boolean nightcap;
 };
@@ -155,6 +156,11 @@ record Diet
 boolean within_limit(Diet d, item it)
 {
 	return (daily_limit(it) == -1) || (d.counts[it] < daily_limit(it));
+}
+
+boolean within_limit(Diet d, skill sk)
+{
+	return (daily_limit(sk) == -1) || (d.casts[sk] < daily_limit(sk));
 }
 
 item get_fork_mug(Consumable c);
@@ -204,6 +210,8 @@ void change_counts(Diet d, DietAction da, int amount)
 	}
 	else if(da.sk == $skill[Ancestral Recall])
 		d.counts[$item[blue mana]] += amount;
+	else
+		d.casts[da.sk] += amount;
 }
 
 void add_counts(Diet d, DietAction da)
@@ -290,7 +298,7 @@ int get_choco_adventures(Diet d)
 	int normalChocoUsed = get_property("_chocolatesUsed").to_int();
 	int vitaChocoUsed = get_property("_vitachocCapsulesUsed").to_int();
 	int cigarChocoUsed = get_property("_chocolateCigarsUsed").to_int();
-	int artChocoUsed = 0; // some day there will be a mafia property for this
+	int artChocoUsed = get_property("_chocolateSculpturesUsed").to_int();
 
 	item classChoco = get_class_chocolate(my_class());
 	boolean [item] classChocos;
@@ -322,12 +330,27 @@ int get_choco_adventures(Diet d)
 	return advs;
 }
 
+int get_extra_time_adventures(Diet d)
+{
+	int extraTimeUsed = get_property("_extraTimeUsed").to_int();
+	int advs = 0;
+	foreach i,da in d.actions
+	{
+		if (da.it == $item[extra time])
+		{
+			advs += 5 - 2 * extraTimeUsed++;
+		}
+	}
+	return advs;
+}
+
 Range total_adventures(Diet d)
 {
 	Range totalAdventures = new Range(0, 0);
 	foreach i,da in d.actions
 		totalAdventures.add(da.get_adventures());
 	totalAdventures.add(d.get_choco_adventures());
+	totalAdventures.add(d.get_extra_time_adventures());
 	return totalAdventures;
 }
 

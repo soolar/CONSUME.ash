@@ -1,6 +1,6 @@
 script "Capitalistic Optimal Noms Script (Ultra Mega Edition)";
 notify "soolar the second";
-since r27060; // rock garden items 
+since r27682; // Add Preference for Extra Time
 
 import <CONSUME/INFO.ash>
 import <CONSUME/CONSTANTS.ash>
@@ -208,6 +208,7 @@ void evaluate_consumables()
 		cuppa Voraci tea,
 		cuppa Sobrie tea,
 		lupine appetite hormones,
+		extra time,
 	]
 		lookups[it] = true;
 	if(have_skill($skill[Ancestral Recall]))
@@ -659,6 +660,27 @@ void handle_special_items(Diet d, OrganSpace space, OrganSpace max)
 				d.add_action(peruseJerkiness);
 		}
 	}
+
+	if (d.within_limit($skill[Sweat Out Some Booze]))
+	{
+		Consumable sweat;
+		sweat.sk = $skill[Sweat Out Some Booze];
+		sweat.organ = ORGAN_NONE;
+		sweat.cleanings[0] = new OrganCleaning(ORGAN_LIVER, daily_limit($skill[Sweat Out Some Booze]));
+		d.handle_organ_cleanings(sweat, space, max);
+		while(d.within_limit($skill[Sweat Out Some Booze]))
+			d.add_action(sweat.to_action(d));
+	}
+
+	if (d.within_limit($skill[Aug. 16th: Roller Coaster Day!]))
+	{
+		Consumable rollerCoaster;
+		rollerCoaster.sk = $skill[Aug. 16th: Roller Coaster Day!];
+		rollerCoaster.organ = ORGAN_NONE;
+		rollerCoaster.cleanings[0] = new OrganCleaning(ORGAN_STOMACHE, 1);
+		d.handle_organ_cleanings(rollerCoaster, space, max);
+		d.add_action(rollerCoaster.to_action(d));
+	}
 }
 
 void handle_organ_cleanings(Diet d, Consumable c, OrganSpace space, OrganSpace max)
@@ -783,6 +805,22 @@ void handle_chocolates(Diet d)
 	}
 }
 
+void handle_extra_time(Diet d)
+{
+	for(int extraTimeAdvs = 5 - 2 * get_property("_extraTimeUsed").to_int(); extraTimeAdvs > 0; extraTimeAdvs -= 2)
+	{
+		int extraTimePrice = $item[extra time].item_price();
+		int extraTimeValue = extraTimeAdvs * ADV_VALUE - extraTimePrice;
+		if(extraTimeValue > 0)
+		{
+			DietAction useExtraTime;
+			useExtraTime.it = $item[extra time];
+			useExtraTime.organ = ORGAN_NONE;
+			d.add_action(useExtraTime);
+		}
+	}
+}
+
 void handle_stomache_expander(Diet d, OrganSpace space, OrganSpace max, item expander, int expansion)
 {
 	if(!d.within_limit(expander))
@@ -887,6 +925,7 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 		}
 	}
 	handle_chocolates(d);
+	handle_extra_time(d);
 
 	// prepend hunger sauce if it's good and you're eating any food
 	if(d.total_organ_fillers(ORGAN_STOMACHE) > 0)
