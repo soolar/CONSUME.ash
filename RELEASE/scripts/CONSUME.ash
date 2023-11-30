@@ -10,7 +10,6 @@ import <CONSUME/HELPERS.ash>
 static boolean haveSearched = false;
 boolean havePinkyRing = available_amount($item[mafia pinky ring]) > 0;
 boolean haveTuxedoShirt = available_amount($item[tuxedo shirt]) > 0;
-int mojoFiltersUseable = daily_limit($item[mojo filter]);
 int songDuration = my_accordion_buff_duration();
 
 boolean firstPassComplete = false;
@@ -509,10 +508,10 @@ void fill_liver(Diet d, OrganSpace space, OrganSpace max)
 
 void handle_special_items(Diet d, OrganSpace space, OrganSpace max)
 {
-	if(mojoFiltersUseable > 0)
+	if(d.within_limit($item[mojo filter]))
 	{
-		float mojoValue = spleen_value(mojoFiltersUseable) / mojoFiltersUseable -
-			item_price($item[mojo filter]);
+		int mojoFiltersUseable = daily_limit($item[mojo filter]);
+		float mojoValue = (spleen_value(mojoFiltersUseable) / mojoFiltersUseable) -	item_price($item[mojo filter]);
 		if(mojoValue > 0)
 		{
 			Consumable mojoFilter;

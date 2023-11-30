@@ -41,6 +41,9 @@ is what you would want to do if you are farming barf mountain and have the songb
 * Ultra Mega Sour Ball
 * Sweet Synthesis (optional)
 * Mayoflex
+* Frosty's Frosty Mug
+* Ol' Scratch's Salad Fork
+* Fudge Spork
 * Special Seasoning
 * Milk of Magnesium
 * The Ode to Booze
@@ -57,8 +60,12 @@ is what you would want to do if you are farming barf mountain and have the songb
 * cuppa Sobrie tea
 * sweet tooth
 * lupine appetite hormones
+* Universal Seasoning
+* Meteorite Ade
+* Jerks' Health&trade; Magazine
 * synthetic dog hair pill (from Map to Safety Shelter Grimace Prime)
 * distention pill (from Map to Safety Shelter Grimace Prime)
+* Drip consumables (nugget/wine/caviar/plum(?)/pilsner)
 * whet stone
 * Sweat Out Some Booze (from designer sweatpants)
 * Aug. 16th: Roller Coaster Day! (from august scepter)
