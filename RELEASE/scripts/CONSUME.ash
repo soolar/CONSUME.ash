@@ -1,6 +1,6 @@
 script "Capitalistic Optimal Noms Script (Ultra Mega Edition)";
 notify "soolar the second";
-since r27775; // Hobopolis consumables all 1/day
+since r27682; // Add Preference for Extra Time
 
 import <CONSUME/INFO.ash>
 import <CONSUME/CONSTANTS.ash>
@@ -10,6 +10,7 @@ import <CONSUME/HELPERS.ash>
 static boolean haveSearched = false;
 boolean havePinkyRing = available_amount($item[mafia pinky ring]) > 0;
 boolean haveTuxedoShirt = available_amount($item[tuxedo shirt]) > 0;
+int mojoFiltersUseable = daily_limit($item[mojo filter]);
 int songDuration = my_accordion_buff_duration();
 
 boolean firstPassComplete = false;
@@ -224,7 +225,7 @@ void evaluate_consumables()
 	}
 	foreach it in $items[]
 	{
-		if(it.can_acquire() == false)
+		if(it.can_acquire() == false || it == $item[Jeppson\'s Malort])
 			continue;
 
 		if(it.levelreq > my_level())
@@ -508,10 +509,10 @@ void fill_liver(Diet d, OrganSpace space, OrganSpace max)
 
 void handle_special_items(Diet d, OrganSpace space, OrganSpace max)
 {
-	if(d.within_limit($item[mojo filter]))
+	if(mojoFiltersUseable > 0)
 	{
-		int mojoFiltersUseable = daily_limit($item[mojo filter]);
-		float mojoValue = (spleen_value(mojoFiltersUseable) / mojoFiltersUseable) -	item_price($item[mojo filter]);
+		float mojoValue = spleen_value(mojoFiltersUseable) / mojoFiltersUseable -
+			item_price($item[mojo filter]);
 		if(mojoValue > 0)
 		{
 			Consumable mojoFilter;
@@ -1251,11 +1252,6 @@ void main(string command)
 	int spleen = spleen_limit() - my_spleen_use();
 	int spleenLimit = spleen_limit();
 
-	if(get_property("CONSUME.ALLOWLIFETIMELIMITED").to_boolean())
-	{
-		allow_lifetime_limited();
-	}
-
 	string [int] commands = command.split_string("\\s+");
 
 	for(int i = 0; i < commands.count(); ++i)
@@ -1333,15 +1329,11 @@ void main(string command)
 			case "REFRESH":
 				haveSearched = false;
 				break;
-			case "ALLOWLIFETIMELIMITED":
-				allow_lifetime_limited();
-				break;
 			case "HELP":
 				print("CONSUME.ash Commands:", "blue");
 				print("ALL - Fill all organs, for real.");
 				print("SIM - Present a diet that would fill you up, but don't execute it.");
 				print("NIGHTCAP - Fill all organs and then overdrink. Can be combined with SIM.");
-				print("ALLOWLIFETIMELIMITED - Allows once/life items like legend pizzas.");
 				print("ORGANS X Y Z - Set the amount of each organ to fill. X Y and " +
 					"Z should be numbers corresponding to stomache, liver, and spleen " +
 					"respectively. Note that if you set these above your max, CONSUME " +
@@ -1371,8 +1363,6 @@ void main(string command)
 					"up building up drippy juice in a brief aftercore stint that you don't want to " +
 					"drip in. Also note that if this is high enough to consider caviar, you will " +
 					"probably bump in to autoBuyPriceLimit.");
-				print("CONSUME.ALLOWLIFETIMELIMITED - If set to true, will act like ALLOWLIFETIMELIMITED" +
-					"was passed as an argument every time.");
 				return;
 			default:
 				print('Unknown command "' + commands[i] + '"', "red");
