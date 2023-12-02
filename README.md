@@ -6,7 +6,7 @@ CONSUME.ash is a script that will handle your diet in Kingdom of Loathing for yo
 
 Run this command in the graphical CLI:
 <pre>
-git checkout https://github.com/soolar/CONSUME.ash.git
+git checkout soolar/CONSUME.ash
 </pre>
 Will require [a recent build of KoLMafia](http://builds.kolmafia.us/job/Kolmafia/lastSuccessfulBuild/).
 
@@ -34,12 +34,16 @@ is what you would want to do if you are farming barf mountain and have the songb
 * General diet
 * Nightcapping
 * Saucemaven
+* Pizza Lover
 * Potion of the field gar
 * Mojo filters
 * Spice melange
 * Ultra Mega Sour Ball
 * Sweet Synthesis (optional)
 * Mayoflex
+* Frosty's Frosty Mug
+* Ol' Scratch's Salad Fork
+* Fudge Spork
 * Special Seasoning
 * Milk of Magnesium
 * The Ode to Booze
@@ -56,6 +60,16 @@ is what you would want to do if you are farming barf mountain and have the songb
 * cuppa Sobrie tea
 * sweet tooth
 * lupine appetite hormones
+* Universal Seasoning
+* Meteorite Ade
+* Jerks' Health&trade; Magazine
+* synthetic dog hair pill (from Map to Safety Shelter Grimace Prime)
+* distention pill (from Map to Safety Shelter Grimace Prime)
+* Drip consumables (nugget/wine/caviar/plum(?)/pilsner)
+* whet stone
+* Sweat Out Some Booze (from designer sweatpants)
+* Aug. 16th: Roller Coaster Day! (from august scepter)
+* extra time
 * Stooper (when nightcapping)
 * Maximizing for hp, hot res, and cold res if using any forks or mugs
 * Restoring equipment to how it was before running the script if anything changed
