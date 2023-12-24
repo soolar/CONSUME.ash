@@ -7,7 +7,7 @@ import <CONSUME/CONSTANTS.ash>
 import <CONSUME/RECORDS.ash>
 import <CONSUME/HELPERS.ash>
 
-static boolean haveSearched = true;
+static boolean haveSearched = false;
 boolean havePinkyRing = available_amount($item[mafia pinky ring]) > 0;
 boolean haveTuxedoShirt = available_amount($item[tuxedo shirt]) > 0;
 int songDuration = my_accordion_buff_duration();
