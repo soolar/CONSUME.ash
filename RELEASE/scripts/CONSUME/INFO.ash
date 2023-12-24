@@ -38,6 +38,13 @@ boolean is_monday()
 	return numeric_modifier($item[tuesday's ruby], "muscle percent") == 5.0;
 }
 
+boolean allowLifetimeLimited = false;
+
+void allow_lifetime_limited()
+{
+	allowLifetimeLimited = true;
+}
+
 int daily_limit(item it)
 {
 	switch(it)
@@ -104,6 +111,12 @@ int daily_limit(item it)
 		// Universal Seasoning
 		case $item[Universal Seasoning]:
 			return item_amount($item[Universal Seasoning]) - get_property("_universalSeasoningsUsed").to_int();
+		case $item[Calzone of Legend]:
+			return (get_property("calzoneOfLegendEaten").to_boolean() || !allowLifetimeLimited) ? 0 : 1;
+		case $item[Deep Dish of Legend]:
+			return (get_property("deepDishOfLegendEaten").to_boolean() || !allowLifetimeLimited) ? 0 : 1;
+		case $item[Pizza of Legend]:
+			return (get_property("pizzaOfLegendEaten").to_boolean() || !allowLifetimeLimited) ? 0 : 1;
 		// TODO: MOOOOOOOOOOOOOORE
 		default: return -1;
 	}
@@ -239,23 +252,30 @@ boolean has_unwanted_text_effect(item it)
 	return it.string_modifier("Effect").to_effect().is_unwanted_text_effect();
 }
 
+// defined in HELPERS.ash
+boolean care_about_ingredients(item it);
+
 boolean can_acquire(item it)
 {
-	if ($items[baked veggie ricotta casserole,
-	plain calzone,
-	roasted vegetable focaccia,
-	ratatouille de Jarlsberg,
-	Jarlsberg's vegetable soup,
-	roasted vegetable of Jarlsberg,
-	St. Pete's sneaky smoothie,
-	Pete's wiley whey bar,
-	Pete's rich ricotta,
-	Boris's beer,
-	honey bun of Boris,
-	Boris's bread] contains it) {
-		// these are all untradable Cookbookbat consumables which can be crafted from tradeable ingredients
+	if(it == $item[Jeppson's Malort]) {
+		return false;
+	}
+
+	if(it.tradeable.to_boolean()) {
 		return true;
 	}
-	// for everything, just return use the tradeable record as before.
-	return it.tradeable.to_boolean();
+
+	if(!care_about_ingredients(it)) {
+		return false;
+	}
+
+	int [item] ingredients = get_ingredients(it);
+	boolean hasIngredients = false;
+	boolean canGetIngredients = true;
+	foreach ingredient, quantity in ingredients {
+		hasIngredients = true;
+		canGetIngredients = canGetIngredients && can_acquire(ingredient);
+	}
+
+	return hasIngredients && canGetIngredients;
 }

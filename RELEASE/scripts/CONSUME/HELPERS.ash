@@ -68,7 +68,7 @@ boolean care_about_ingredients(item it)
 		stench wad,
 		disassembled clover,
 	];
-	return !(dontCare contains it);
+	return !(dontCare contains it) && (it.fullness > 0 || it.inebriety > 0 || it.spleen > 0);
 }
 
 int item_price(item it)

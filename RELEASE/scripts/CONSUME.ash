@@ -7,7 +7,7 @@ import <CONSUME/CONSTANTS.ash>
 import <CONSUME/RECORDS.ash>
 import <CONSUME/HELPERS.ash>
 
-static boolean haveSearched = false;
+static boolean haveSearched = true;
 boolean havePinkyRing = available_amount($item[mafia pinky ring]) > 0;
 boolean haveTuxedoShirt = available_amount($item[tuxedo shirt]) > 0;
 int songDuration = my_accordion_buff_duration();
@@ -224,7 +224,7 @@ void evaluate_consumables()
 	}
 	foreach it in $items[]
 	{
-		if(it.can_acquire() == false || it == $item[Jeppson\'s Malort])
+		if(it.can_acquire() == false)
 			continue;
 
 		if(it.levelreq > my_level())
@@ -1328,11 +1328,15 @@ void main(string command)
 			case "REFRESH":
 				haveSearched = false;
 				break;
+			case "ALLOWLIFETIMELIMITED":
+				allow_lifetime_limited();
+				break;
 			case "HELP":
 				print("CONSUME.ash Commands:", "blue");
 				print("ALL - Fill all organs, for real.");
 				print("SIM - Present a diet that would fill you up, but don't execute it.");
 				print("NIGHTCAP - Fill all organs and then overdrink. Can be combined with SIM.");
+				print("ALLOWLIFETIMELIMITED - Allows once/life items like legend pizzas.");
 				print("ORGANS X Y Z - Set the amount of each organ to fill. X Y and " +
 					"Z should be numbers corresponding to stomache, liver, and spleen " +
 					"respectively. Note that if you set these above your max, CONSUME " +
