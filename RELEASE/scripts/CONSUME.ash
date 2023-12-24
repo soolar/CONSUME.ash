@@ -1251,6 +1251,11 @@ void main(string command)
 	int spleen = spleen_limit() - my_spleen_use();
 	int spleenLimit = spleen_limit();
 
+	if(get_property("CONSUME.ALLOWLIFETIMELIMITED").to_boolean())
+	{
+		allow_lifetime_limited();
+	}
+
 	string [int] commands = command.split_string("\\s+");
 
 	for(int i = 0; i < commands.count(); ++i)
@@ -1366,6 +1371,8 @@ void main(string command)
 					"up building up drippy juice in a brief aftercore stint that you don't want to " +
 					"drip in. Also note that if this is high enough to consider caviar, you will " +
 					"probably bump in to autoBuyPriceLimit.");
+				print("CONSUME.ALLOWLIFETIMELIMITED - If set to true, will act like ALLOWLIFETIMELIMITED" +
+					"was passed as an argument every time.");
 				return;
 			default:
 				print('Unknown command "' + commands[i] + '"', "red");
