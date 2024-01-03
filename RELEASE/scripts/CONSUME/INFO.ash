@@ -117,6 +117,21 @@ int daily_limit(item it)
 			return (get_property("deepDishOfLegendEaten").to_boolean() || !allowLifetimeLimited) ? 0 : 1;
 		case $item[Pizza of Legend]:
 			return (get_property("pizzaOfLegendEaten").to_boolean() || !allowLifetimeLimited) ? 0 : 1;
+		// rip
+		case $item[voodoo snuff]:
+			return get_property("_voodooSnuffUsed").to_boolean() ? 0 : 1;
+		case $item[Frosty's frosty mug]:
+			return get_property("_frostyMugUsed").to_boolean() ? 0 : 1;
+		case $item[jar of fermented pickle juice]:
+			return get_property("_pickleJuiceDrunk").to_boolean() ? 0 : 1;
+		case $item[Ol' Scratch's salad fork]:
+			return get_property("_saladForkUsed").to_boolean() ? 0 : 1;
+		case $item[extra-greasy slider]:
+			return get_property("_extraGreasySliderEaten").to_boolean() ? 0 : 1;
+		case $item[Hodgman's blanket]:
+			return get_property("_hodgmansBlanketDrunk").to_boolean() ? 0 : 1;
+		case $item[tin cup of mulligan stew]:
+			return get_property("_mulliganStewEaten").to_boolean() ? 0 : 1;
 		// TODO: MOOOOOOOOOOOOOORE
 		default: return -1;
 	}

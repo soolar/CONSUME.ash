@@ -1,6 +1,6 @@
 script "Capitalistic Optimal Noms Script (Ultra Mega Edition)";
 notify "soolar the second";
-since r27682; // Add Preference for Extra Time
+since r27775; // Hobopolis consumables all 1/day
 
 import <CONSUME/INFO.ash>
 import <CONSUME/CONSTANTS.ash>

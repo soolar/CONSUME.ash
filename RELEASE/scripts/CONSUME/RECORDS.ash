@@ -179,7 +179,12 @@ DietAction to_action(Consumable c, Diet d)
 	if(c.useWhetStone)
 		da.tools[da.tools.count()] = $item[whet stone];
 	if(c.useForkMug)
-		da.tools[da.tools.count()] = c.get_fork_mug();
+	{
+		item fork_mug = c.get_fork_mug();
+		if(d.within_limit(fork_mug)) {
+			da.tools[da.tools.count()] = c.get_fork_mug();
+		}
+	}
 	if(c.useSporkIfPossible && d.within_limit($item[fudge spork]))
 		da.tools[da.tools.count()] = $item[fudge spork];
 	if(c.organ == ORGAN_STOMACHE && d.within_limit($item[Universal Seasoning]))
