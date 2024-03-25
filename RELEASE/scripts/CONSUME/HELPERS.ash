@@ -68,7 +68,32 @@ boolean care_about_ingredients(item it)
 		stench wad,
 		disassembled clover,
 	];
-	return !(dontCare contains it) && (it.fullness > 0 || it.inebriety > 0 || it.spleen > 0);
+
+	if(dontCare contains it) {
+		return false;
+	}
+
+	if(it.fullness <= 0 && it.inebriety <= 0 && it.spleen <= 0) {
+		return false;
+	}
+
+	// rule out coinmaster items if we don't have access to the coinmaster
+	// I'm looking at you, wrecked generators
+	if(is_coinmaster_item(it)) {
+		boolean foundGood = false;
+		foreach cmas in $coinmasters[] {
+			// could potentially use improvements
+			if(cmas.sells_item(it) && cmas.item.tradeable && cmas.is_accessible()) {
+				foundGood = true;
+				break;
+			}
+		}
+		if(!foundGood) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 int item_price(item it)
