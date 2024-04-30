@@ -92,15 +92,23 @@ int daily_limit(item it)
 			return get_property("_drippyPilsnerUsed").to_boolean() ? 0 : 1;
 		// batfellow consumables
 		case $item[Kudzu salad]:
+			return get_property("_kudzuSaladEaten").to_boolean() ? 0 : 1;
 		case $item[Mansquito Serum]:
+			return get_property("_mansquitoSerumUsed").to_boolean() ? 0 : 1;
 		case $item[Miss Graves' vermouth]:
+			return get_property("_missGravesVermouthDrunk").to_boolean() ? 0 : 1;
 		case $item[The Plumber's mushroom stew]:
+			return get_property("_plumbersMushroomStewEaten").to_boolean() ? 0 : 1;
 		case $item[The Author's ink]:
+			return get_property("_authorsInkUsed").to_boolean() ? 0 : 1;
 		case $item[The Mad Liquor]:
+			return get_property("_madLiquorDrunk").to_boolean() ? 0 : 1;
 		case $item[Doc Clock's thyme cocktail]:
+			return get_property("_docClocksThymeCocktailDrunk").to_boolean() ? 0 : 1;
 		case $item[Mr. Burnsger]:
+			return get_property("_mrBurnsgerEaten").to_boolean() ? 0 : 1;
 		case $item[The Inquisitor's unidentifiable object]:
-			return 1;
+			return get_property("_inquisitorsUnidentifiableObjectUsed").to_boolean() ? 0 : 1;
 		// Universal Seasoning
 		case $item[Universal Seasoning]:
 			return item_amount($item[Universal Seasoning]) - get_property("_universalSeasoningsUsed").to_int();
