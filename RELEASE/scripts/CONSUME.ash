@@ -860,7 +860,7 @@ void handle_organ_expanders(Diet d, OrganSpace space, OrganSpace max, boolean ni
 	}
 }
 
-Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
+Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap, boolean organCleansers)
 {
 	evaluate_consumables_if_needed();
 
@@ -879,7 +879,7 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 		space.inebriety += actualLiver;
 	}
 
-	if(space.fullness <= 0 && space.inebriety <= 0 && space.spleen <= 0)
+	if(space.fullness <= 0 && space.inebriety <= 0 && space.spleen <= 0 && !organCleansers)
 	{
 		handle_special_items(d, space, max);
 	}
@@ -905,7 +905,10 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 			if(space.inebriety > 0)
 				break;
 		}
-		handle_special_items(d, space, max);
+
+		if(!organCleansers) {
+			handle_special_items(d, space, max);
+		}
 
 		if(nightcap && space.fullness <= 0 && space.inebriety <= 0 && space.spleen <= 0)
 		{
@@ -1244,6 +1247,7 @@ void main(string command)
 	// this is set if SIM is present in the command, overrides NIGHTCAP and ALL
 	boolean seriouslySimulate = false;
 	boolean nightcap = false;
+	int organCleansers = false;
 	int fullness = fullness_limit() - my_fullness();
 	int fullnessLimit = fullness_limit();
 	int inebriety = inebriety_limit() - my_inebriety();
@@ -1267,6 +1271,10 @@ void main(string command)
 				break;
 			case "SIM":
 				seriouslySimulate = true;
+				break;
+			case "NOCLEANSE":
+				simulate = false;
+				organCleansers = true;
 				break;
 			case "NIGHTCAP":
 				simulate = false;
@@ -1386,7 +1394,7 @@ void main(string command)
 
 	evaluate_consumables();
 
-	Diet d = get_diet(fullness, inebriety, spleen, nightcap);
+	Diet d = get_diet(fullness, inebriety, spleen, nightcap, organCleansers);
 	print_diet(d);
 
 	if(!simulate)
