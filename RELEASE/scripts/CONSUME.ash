@@ -1059,11 +1059,11 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap, boolean organC
 	return d;
 }
 
-Diet get_diet(int stom, int liv, int sple, boolean nightcap)
+Diet get_diet(int stom, int liv, int sple, boolean nightcap, boolean organCleansers)
 {
 	return get_diet(new OrganSpace(stom, liv, sple),
 		new OrganSpace(fullness_limit(), inebriety_limit(), spleen_limit()),
-		nightcap);
+		nightcap, organCleansers);
 }
 
 void append_item(buffer b, item it, int organ, int amount, boolean nightcap, boolean hasUnseasoned)
