@@ -1247,7 +1247,7 @@ void main(string command)
 	// this is set if SIM is present in the command, overrides NIGHTCAP and ALL
 	boolean seriouslySimulate = false;
 	boolean nightcap = false;
-	int organCleansers = false;
+	boolean organCleansers = false;
 	int fullness = fullness_limit() - my_fullness();
 	int fullnessLimit = fullness_limit();
 	int inebriety = inebriety_limit() - my_inebriety();
