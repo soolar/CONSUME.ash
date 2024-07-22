@@ -18,6 +18,9 @@ boolean consumablesEvaluated = false;
 int stomache_value(int space);
 int liver_value(int space);
 int spleen_value(int space);
+int cleaned_stomache_value(int space);
+int cleaned_liver_value(int space);
+int cleaned_spleen_value(int space);
 
 Consumable [int] food;
 Consumable [int] booze;
@@ -381,7 +384,7 @@ int space_value(Consumable [int] list, int space)
 	foreach i,c in list
 	{
 		// assume the list is sorted already
-		if(c.space <= space)
+		if(c.space <= space && daily_limit(c.it) > 0)
 		{
 			int amount = floor(space / c.space);
 			value += c.get_value(new Diet()) * amount;
@@ -409,9 +412,37 @@ int spleen_value(int space)
 	return space_value(spleenies, space);
 }
 
-int organ_value(int stomache, int liver, int spleen)
+int cleaned_stomache_value(int space, boolean nightcap)
 {
-	return stomache_value(stomache) + liver_value(liver) + spleen_value(spleen);
+	int usable_space = 0;
+	if (!nightcap && my_fullness() - space < fullness_limit()) {
+		// if we're nightcapping any reclaimed space is potentially wasted as we will be overdrunk
+		// also only value cleansing if it will actually give us some usable fullness back
+		usable_space = space;
+	}
+	return space_value(food, usable_space);
+}
+
+int cleaned_liver_value(int space, boolean nightcap)
+{
+	int usable_space = 0;
+	if (!nightcap && my_inebriety() - space < inebriety_limit()) {
+		// if we're nightcapping any reclaimed space is potentially wasted as we will be overdrunk
+		// also only value cleansing if it will actually give us some usable drunkeness back
+		usable_space = space;
+	}
+	return space_value(booze, usable_space);
+}
+
+int cleaned_spleen_value(int space, boolean nightcap)
+{
+	int usable_space = 0;
+	if (!nightcap && my_spleen_use() - space < spleen_limit()) {
+		// if we're nightcapping any reclaimed space is potentially wasted as we will be overdrunk
+		// also only value cleansing if it will actually give us some usable spleen back
+		usable_space = space;
+	}
+	return space_value(spleenies, space);
 }
 
 Consumable best_consumable(Diet d, Consumable [int] list, int space)
@@ -511,7 +542,7 @@ void handle_special_items(Diet d, OrganSpace space, OrganSpace max)
 	if(d.within_limit($item[mojo filter]))
 	{
 		int mojoFiltersUseable = daily_limit($item[mojo filter]);
-		float mojoValue = (spleen_value(mojoFiltersUseable) / mojoFiltersUseable) -	item_price($item[mojo filter]);
+		float mojoValue = (cleaned_spleen_value(mojoFiltersUseable, d.nightcap) / mojoFiltersUseable) -	item_price($item[mojo filter]);
 		if(mojoValue > 0)
 		{
 			Consumable mojoFilter;
@@ -529,7 +560,7 @@ void handle_special_items(Diet d, OrganSpace space, OrganSpace max)
 
 	if(d.within_limit($item[spice melange]))
 	{
-		float spiceValue = stomache_value(3) + liver_value(3) -
+		float spiceValue = cleaned_stomache_value(3, d.nightcap) + cleaned_liver_value(3, d.nightcap) -
 			$item[spice melange].item_price();
 		if(spiceValue > 0)
 		{
@@ -545,7 +576,7 @@ void handle_special_items(Diet d, OrganSpace space, OrganSpace max)
 
 	if(d.within_limit($item[Ultra Mega Sour Ball]))
 	{
-		float sourBallValue = stomache_value(3) + liver_value(3) -
+		float sourBallValue = cleaned_stomache_value(3, d.nightcap) + cleaned_liver_value(3, d.nightcap) -
 			$item[Ultra Mega Sour Ball].item_price();
 		if(sourBallValue > 0)
 		{
@@ -561,7 +592,7 @@ void handle_special_items(Diet d, OrganSpace space, OrganSpace max)
 
 	if(d.within_limit($item[alien animal milk]))
 	{
-		float alienMilkValue = stomache_value(3) - $item[alien animal milk].item_price();
+		float alienMilkValue = cleaned_stomache_value(3, d.nightcap) - $item[alien animal milk].item_price();
 		if(alienMilkValue > 0)
 		{
 			Consumable alienMilk;
@@ -575,7 +606,7 @@ void handle_special_items(Diet d, OrganSpace space, OrganSpace max)
 
 	if(d.within_limit($item[alien plant pod]))
 	{
-		float plantPodValue = liver_value(3) - $item[alien plant pod].item_price();
+		float plantPodValue = cleaned_liver_value(3, d.nightcap) - $item[alien plant pod].item_price();
 		if(plantPodValue > 0)
 		{
 			Consumable plantPod;
@@ -589,7 +620,7 @@ void handle_special_items(Diet d, OrganSpace space, OrganSpace max)
 
 	if(d.within_limit($item[cuppa Sobrie tea]))
 	{
-		float sobrieTeaValue = liver_value(1) - $item[cuppa Sobrie tea].item_price();
+		float sobrieTeaValue = cleaned_liver_value(1, d.nightcap) - $item[cuppa Sobrie tea].item_price();
 		if(sobrieTeaValue > 0)
 		{
 			Consumable sobrieTea;
@@ -603,7 +634,7 @@ void handle_special_items(Diet d, OrganSpace space, OrganSpace max)
 
 	if(d.within_limit($item[synthetic dog hair pill]))
 	{
-		float dogHairValue = liver_value(1) - $item[synthetic dog hair pill].item_price();
+		float dogHairValue = cleaned_liver_value(1, d.nightcap) - $item[synthetic dog hair pill].item_price();
 		if(dogHairValue > 0)
 		{
 			Consumable dogHair;
@@ -662,23 +693,31 @@ void handle_special_items(Diet d, OrganSpace space, OrganSpace max)
 
 	if (d.within_limit($skill[Sweat Out Some Booze]))
 	{
-		Consumable sweat;
-		sweat.sk = $skill[Sweat Out Some Booze];
-		sweat.organ = ORGAN_NONE;
-		sweat.cleanings[0] = new OrganCleaning(ORGAN_LIVER, daily_limit($skill[Sweat Out Some Booze]));
-		d.handle_organ_cleanings(sweat, space, max);
-		while(d.within_limit($skill[Sweat Out Some Booze]))
-			d.add_action(sweat.to_action(d));
+		float sweatOutSomeBoozeValue = cleaned_liver_value(daily_limit($skill[Sweat Out Some Booze]), d.nightcap);
+		if(sweatOutSomeBoozeValue > 0)
+		{
+			Consumable sweat;
+			sweat.sk = $skill[Sweat Out Some Booze];
+			sweat.organ = ORGAN_NONE;
+			sweat.cleanings[0] = new OrganCleaning(ORGAN_LIVER, daily_limit($skill[Sweat Out Some Booze]));
+			d.handle_organ_cleanings(sweat, space, max);
+			while(d.within_limit($skill[Sweat Out Some Booze]))
+				d.add_action(sweat.to_action(d));
+		}
 	}
 
 	if (d.within_limit($skill[Aug. 16th: Roller Coaster Day!]))
 	{
-		Consumable rollerCoaster;
-		rollerCoaster.sk = $skill[Aug. 16th: Roller Coaster Day!];
-		rollerCoaster.organ = ORGAN_NONE;
-		rollerCoaster.cleanings[0] = new OrganCleaning(ORGAN_STOMACHE, 1);
-		d.handle_organ_cleanings(rollerCoaster, space, max);
-		d.add_action(rollerCoaster.to_action(d));
+		float rollerCoasterDayValue = cleaned_stomache_value(1, d.nightcap);
+		if(rollerCoasterDayValue > 0)
+		{
+			Consumable rollerCoaster;
+			rollerCoaster.sk = $skill[Aug. 16th: Roller Coaster Day!];
+			rollerCoaster.organ = ORGAN_NONE;
+			rollerCoaster.cleanings[0] = new OrganCleaning(ORGAN_STOMACHE, 1);
+			d.handle_organ_cleanings(rollerCoaster, space, max);
+			d.add_action(rollerCoaster.to_action(d));
+		}
 	}
 }
 
