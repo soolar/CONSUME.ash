@@ -384,7 +384,7 @@ int space_value(Consumable [int] list, int space)
 	foreach i,c in list
 	{
 		// assume the list is sorted already
-		if(c.space <= space && daily_limit(c.it) > 0)
+		if(c.space <= space && daily_limit(c.it) != 0) // daily_limit returns -1 for unlimited consumables
 		{
 			int amount = floor(space / c.space);
 			value += c.get_value(new Diet()) * amount;
