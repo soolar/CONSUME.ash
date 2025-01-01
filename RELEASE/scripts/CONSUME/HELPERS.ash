@@ -168,6 +168,7 @@ int get_tool_organ(item tool)
 			return ORGAN_STOMACHE;
 		case $item[Frosty's frosty mug]:
 			return ORGAN_LIVER;
+		case $item[mini kiwi aioli]:
 		case $item[Universal Seasoning]:
 		case $item[whet stone]:
 			return ORGAN_NONE;
