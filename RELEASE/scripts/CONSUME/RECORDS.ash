@@ -83,6 +83,7 @@ record Consumable
 	item bestMayo;
 	boolean useSeasoning;
 	boolean useWhetStone;
+	boolean useKiwiAioli;
 };
 
 boolean is_nothing(Consumable c)
@@ -178,6 +179,8 @@ DietAction to_action(Consumable c, Diet d)
 		da.tools[da.tools.count()] = $item[special seasoning];
 	if(c.useWhetStone)
 		da.tools[da.tools.count()] = $item[whet stone];
+	if(c.useKiwiAioli)
+		da.tools[da.tools.count()] = $item[mini kiwi aioli];
 	if(c.useForkMug)
 	{
 		item fork_mug = c.get_fork_mug();

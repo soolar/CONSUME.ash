@@ -71,6 +71,9 @@ Range get_adventures(DietAction da)
 		case $item[whet stone]:
 			advs.add(1);
 			break;
+		case $item[mini kiwi aioli]:
+			advs.add(da.space);
+			break;
 		}
 	}
 
@@ -162,6 +165,8 @@ void evaluate_consumable(Consumable c)
 			c.useSeasoning = true;
 		if(item_price($item[whet stone]) < ADV_VALUE)
 			c.useWhetStone = true;
+		if(item_price($item[mini kiwi aioli]) < ADV_VALUE * c.space)
+			c.useKiwiAioli = true;
 	}
 
 	record OrganMatcher
@@ -197,6 +202,7 @@ void evaluate_consumables()
 		ol' scratch's salad fork,
 		Special Seasoning,
 		whet stone,
+		mini kiwi aioli,
 		mojo filter,
 		spice melange,
 		fudge spork,
@@ -350,6 +356,8 @@ void evaluate_consumables()
 				b.append(" (w/seasoning)");
 			if(c.useWhetStone)
 				b.append(" (w/whet stone)");
+			if(c.useKiwiAioli)
+				b.append(" (w/kiwi aioli)");
 			b.append(" (");
 			b.append(c.get_value(d) / c.space);
 			b.append(")");
