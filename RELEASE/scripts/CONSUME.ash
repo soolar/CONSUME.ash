@@ -217,6 +217,7 @@ void evaluate_consumables()
 		cuppa Sobrie tea,
 		lupine appetite hormones,
 		extra time,
+		clock,
 	]
 		lookups[it] = true;
 	if(have_skill($skill[Ancestral Recall]))
@@ -867,6 +868,23 @@ void handle_extra_time(Diet d)
 	}
 }
 
+void handle_clock(Diet d)
+{
+	// can only use 2 of these per day. The third does nothing for some reason.
+	for(int clockAdvs = 3 - 1 * get_property("_clocksUsed").to_int(); clockAdvs > 1; clockAdvs -= 1)
+	{
+		int clockPrice = $item[clock].item_price();
+		int clockValue = clockAdvs * ADV_VALUE - clockPrice;
+		if(clockValue > 0)
+		{
+			DietAction useClock;
+			useClock.it = $item[clock];
+			useClock.organ = ORGAN_NONE;
+			d.add_action(useClock);
+		}
+	}
+}
+
 void handle_stomache_expander(Diet d, OrganSpace space, OrganSpace max, item expander, int expansion)
 {
 	if(!d.within_limit(expander))
@@ -977,6 +995,7 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 	}
 	handle_chocolates(d);
 	handle_extra_time(d);
+	handle_clock(d);
 
 	// prepend hunger sauce if it's good and you're eating any food
 	if(d.total_organ_fillers(ORGAN_STOMACHE) > 0)

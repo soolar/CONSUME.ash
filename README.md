@@ -66,10 +66,12 @@ is what you would want to do if you are farming barf mountain and have the songb
 * synthetic dog hair pill (from Map to Safety Shelter Grimace Prime)
 * distention pill (from Map to Safety Shelter Grimace Prime)
 * Drip consumables (nugget/wine/caviar/plum(?)/pilsner)
-* whet stone
+* whet stone (from rock garden)
 * Sweat Out Some Booze (from designer sweatpants)
 * Aug. 16th: Roller Coaster Day! (from august scepter)
-* extra time
+* extra time (from pile of burning leaves)
+* mini kiwi aioli (from mini kiwi)
+* clock (from Möbius ring)
 * Stooper (when nightcapping)
 * Maximizing for hp, hot res, and cold res if using any forks or mugs
 * Restoring equipment to how it was before running the script if anything changed

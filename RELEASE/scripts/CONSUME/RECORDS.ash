@@ -352,6 +352,20 @@ int get_extra_time_adventures(Diet d)
 	return advs;
 }
 
+int get_clock_adventures(Diet d)
+{
+	int clocksUsed = get_property("_clocksUsed").to_int();
+	int advs = 0;
+	foreach i,da in d.actions
+	{
+		if (da.it == $item[clock])
+		{
+			advs += 3 - 1 * clocksUsed++;
+		}
+	}
+	return advs;
+}
+
 Range total_adventures(Diet d)
 {
 	Range totalAdventures = new Range(0, 0);
@@ -359,6 +373,7 @@ Range total_adventures(Diet d)
 		totalAdventures.add(da.get_adventures());
 	totalAdventures.add(d.get_choco_adventures());
 	totalAdventures.add(d.get_extra_time_adventures());
+	totalAdventures.add(d.get_clock_adventures());
 	return totalAdventures;
 }
 
