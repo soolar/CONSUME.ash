@@ -871,7 +871,7 @@ void handle_extra_time(Diet d)
 void handle_clock(Diet d)
 {
 	// can only use 2 of these per day. The third does nothing for some reason.
-	for(int clockAdvs = 3 - 1 * get_property("_clocksUsed").to_int(); clockAdvs > 1; clockAdvs -= 1)
+	for(int clockAdvs = 3 - get_property("_clocksUsed").to_int(); clockAdvs > 1; clockAdvs -= 1)
 	{
 		int clockPrice = $item[clock].item_price();
 		int clockValue = clockAdvs * ADV_VALUE - clockPrice;

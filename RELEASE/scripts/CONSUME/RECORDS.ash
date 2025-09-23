@@ -346,7 +346,8 @@ int get_extra_time_adventures(Diet d)
 	{
 		if (da.it == $item[extra time])
 		{
-			advs += 5 - 2 * extraTimeUsed++;
+			advs += 5 - 2 * extraTimeUsed;
+			extraTimeUsed++;
 		}
 	}
 	return advs;
@@ -360,7 +361,8 @@ int get_clock_adventures(Diet d)
 	{
 		if (da.it == $item[clock])
 		{
-			advs += 3 - 1 * clocksUsed++;
+			advs += 3 - 1 * clocksUsed;
+			clocksUsed++;
 		}
 	}
 	return advs;
