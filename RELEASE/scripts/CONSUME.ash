@@ -1135,6 +1135,22 @@ Diet get_diet(int stom, int liv, int sple, boolean nightcap)
 		nightcap);
 }
 
+slot get_equip_slot(item it)
+{
+	item_slot = to_slot(it); 
+	if item_slot == $slot[acc1]
+	{
+		foreach s in [$slot[acc1], $slot[acc2], $slot[acc3]]
+		{
+			eq_it = equipped_item(s);
+			if(numeric_modifier(eq_it,"liver capacity") == 0)
+				return s.to_string();
+		}
+		print("Unable to find a good equip slot for " + it.to_string() + "!", "red");
+	}
+	else return item_slot.to_string();
+}
+
 void append_item(buffer b, item it, int organ, int amount, boolean nightcap, boolean hasUnseasoned)
 {
 	switch(organ)
@@ -1143,7 +1159,7 @@ void append_item(buffer b, item it, int organ, int amount, boolean nightcap, boo
 		case ORGAN_LIVER: b.append(nightcap ? "drinksilent " : "drink "); break;
 		case ORGAN_SPLEEN: b.append("chew "); break; // maybe someday?
 		case ORGAN_NONE: b.append("use "); break;
-		case ORGAN_EQUIP: b.append("equip "); break;
+		case ORGAN_EQUIP: b.append("equip " + get_equip_slot(it) + " "); break;
 		case ORGAN_AUTOMATIC:
 			if(hasUnseasoned)
 			{
