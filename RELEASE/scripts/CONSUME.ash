@@ -1017,24 +1017,6 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 		d.insert_action(useGar, 0);
 	}
 
-	// prepend equipping pinky ring is necessary
-	if(havePinkyRing && d.has_wine())
-	{
-		DietAction equipPinkyRing;
-		equipPinkyRing.it = $item[mafia pinky ring];
-		equipPinkyRing.organ = ORGAN_EQUIP;
-		d.insert_action(equipPinkyRing, 0);
-	}
-
-	// prepend equipping tuxedo shirt if necessary
-	if(haveTuxedoShirt && d.has_martini())
-	{
-		DietAction equipTuxedoShirt;
-		equipTuxedoShirt.it = $item[tuxedo shirt];
-		equipTuxedoShirt.organ = ORGAN_EQUIP;
-		d.insert_action(equipTuxedoShirt, 0);
-	}
-
 	// prepend maximizing for fork and mug if needed
 	if(d.has_fork_mug())
 	{
@@ -1464,8 +1446,20 @@ void main(string command)
 
 	if(!simulate)
 	{
+		string autoPinkyRingBackup = get_property("autoPinkyRing");
+		string autoTuxedoBackup = get_property("autoTuxedo");
+		if(havePinkyRing && d.has_wine())
+		{
+			set_property("autoPinkyRing", "true");
+		}
+		if(haveTuxedoShirt && d.has_martini())
+		{
+			set_property("autoTuxedo", "true");
+		}
 		buffer b;
 		b.append_diet(d);
 		cli_execute(b.to_string());
+		set_property("autoPinkyRing", autoPinkyRingBackup);
+		set_property("autoTuxedo", autoTuxedoBackup);
 	}
 }
