@@ -14,6 +14,13 @@ int songDuration = my_accordion_buff_duration();
 boolean firstPassComplete = false;
 boolean consumablesEvaluated = false;
 
+boolean pork_elf_toilet_available()
+{
+	return (get_campground() contains $item[Pork Elf toilet])
+		&& !get_property("_porkElfToiletUsed").to_boolean()
+		&& total_free_rests() > get_property("timesRested").to_int();
+}
+
 int stomache_value(int space);
 int liver_value(int space);
 int spleen_value(int space);
@@ -940,6 +947,17 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 
 	d.handle_organ_expanders(space, max, nightcap);
 
+	// Reserve an extra fullness slot for the Pork Elf toilet if available.
+	// The toilet procs on the first daily campground rest at >=2 fullness,
+	// reducing fullness by 1 and allowing one extra food item to be eaten.
+	boolean useToilet = pork_elf_toilet_available() && space.fullness >= 2;
+	int realFullnessLimit = max.fullness;
+	if(useToilet)
+	{
+		space.fullness += 1;
+		max.fullness += 1;
+	}
+
 	// do the shotglass drink first
 	if(item_amount($item[mime army shotglass]) > 0 &&
 		!get_property("_mimeArmyShotglassUsed").to_boolean())
@@ -994,6 +1012,33 @@ Diet get_diet(OrganSpace space, OrganSpace max, boolean nightcap)
 			sort booze by -value.get_value(d) / value.space;
 		}
 	}
+	// Insert a campground rest just before the food action that pushes past the
+	// real fullness cap, so the toilet flush makes room for that item.
+	// cumulative must be >=2 at that point to satisfy the toilet's requirement.
+	if(useToilet)
+	{
+		int cumulative = 0;
+		int insertAt = -1;
+		for(int i = 0; i < d.actions.count(); ++i)
+		{
+			if(d.actions[i].organ == ORGAN_STOMACHE)
+			{
+				if(cumulative >= 2 && cumulative + d.actions[i].space > realFullnessLimit)
+				{
+					insertAt = i;
+					break;
+				}
+				cumulative += d.actions[i].space;
+			}
+		}
+		if(insertAt >= 0)
+		{
+			DietAction restAction;
+			restAction.organ = ORGAN_REST;
+			d.insert_action(restAction, insertAt);
+		}
+	}
+
 	handle_chocolates(d);
 	handle_extra_time(d);
 	handle_clock(d);
@@ -1183,6 +1228,8 @@ void append_diet_action(buffer b, DietAction da, int amount, Diet d)
 		b.append("maximize hp,10cold res,10hot res; ");
 	else if(da.organ == ORGAN_CHECKPOINT)
 		b.append("checkpoint; ");
+	else if(da.organ == ORGAN_REST)
+		b.append("rest 1 campground; ");
 	else if(da.organ == ORGAN_RESTORE)
 	{
 		b.append("familiar ");
